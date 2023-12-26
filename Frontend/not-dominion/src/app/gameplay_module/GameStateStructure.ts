@@ -1,28 +1,15 @@
-enum PlayerColours 
-{
-    Red,
-    White,
-    Yellow,
-    Blue
-}
-
-class Industry
-{
-    name : string = "";
-    moneyCosts : number[] = [];
-    coalCosts : number[] = [];
-    ironCosts : number[] = [];
-
-    beerCostsToFlip : number[] = [];
-    victoryPoints : number[] = [];
-    linkPoints : number[] = [];
-    incomeBonuses : number[] = [];
-}
+import { Industry } from "./Industries";
 
 class IndustrySection 
 {
-    industryID : number = 0;
-    counts : number[] = [];
+    industryID : number;
+    counts : number[];
+    
+    constructor(industryID : number, counts : number[])
+    {
+        this.industryID = industryID;
+        this.counts = counts;
+    }
 } 
 
 class PlayerArea 
@@ -31,45 +18,76 @@ class PlayerArea
 
     constructor(industries : Industry[])
     {
-        industries.forEach(element => {
-            this.section.push(new IndustrySection())
-        });
+        for (let i : number = 0; i < industries.length; i++) 
+        {
+            let startingAmount : number[] = [];
+
+            for (let level : number = 0; level < industries.length; level++)
+            {
+                startingAmount.push(
+                    industries[i].industryLevels[level].startingAmount);
+            }
+
+            this.section.push(new IndustrySection(i, startingAmount));
+        }
     }
 }
 
 class PublicPlayerData
 {
-    money : number = 17;
-    moneySpentInCurrentRound : number = 0;
-    victoryPoints : number = 0;
-    income : number = 0;
+    money : number;
+    moneySpentInCurrentRound : number;
+    victoryPoints : number;
+    income : number;
+    playerArea : PlayerArea;
+
+    constructor(money : number, 
+                moneySpentInCurrentRound : number, 
+                victoryPoints : number,
+                income : number,
+                playerArea : PlayerArea)
+    {
+        this.money = money;
+        this.moneySpentInCurrentRound = moneySpentInCurrentRound;
+        this.victoryPoints = victoryPoints;
+        this.income = income;
+        this.playerArea = playerArea;
+    }
 }
 
 class PublicState 
 {
-    wildLocationCardsLeft : number = 4;
-    wildIndustryCardsLeft : number = 4;
-    numberOfCardsLeftInDeck : number = 30;
+    wildLocationCardsLeft : number;
+    wildIndustryCardsLeft : number;
+    numberOfCardsLeftInDeck : number;
 
-    currentTurnOrder : PlayerColours[] = 
-    [
-        PlayerColours.Red,
-        PlayerColours.White,
-        PlayerColours.Yellow,
-        PlayerColours.Blue
-    ];
-    currentTurnIndex : number = 0;
+    currentTurnOrder : number[];
+    currentTurnIndex : number;
 
-    publicPlayerDate : PublicPlayerData[] = 
-    [
-        new PublicPlayerData(), 
-        new PublicPlayerData(), 
-        new PublicPlayerData(), 
-        new PublicPlayerData()
-    ];
+    publicPlayerData : PublicPlayerData[];
 
-    coalMarketCount : number = 0;
-    ironMarketCount : number = 0;
-    
-    playerAreas : PlayerArea[] = [];
+    coalMarketCount : number;
+    ironMarketCount : number;
+
+    constructor(wildLocationCardsLeft : number,
+                wildIndustryCardsLeft : number,
+                numberOfCardsLeftInDeck : number,
+                currentTurnOrder : number[],
+                currentTurnIndex : number,
+                publicPlayerData : PublicPlayerData[],
+                coalMarketCount : number,
+                ironMarketCount : number)
+    {
+        this.wildLocationCardsLeft = wildLocationCardsLeft;
+        this.wildIndustryCardsLeft = wildIndustryCardsLeft;
+        this.numberOfCardsLeftInDeck = numberOfCardsLeftInDeck;
+
+        this.currentTurnOrder = currentTurnOrder;
+        this.currentTurnIndex = currentTurnIndex;
+
+        this.publicPlayerData = publicPlayerData;
+
+        this.coalMarketCount = coalMarketCount;
+        this.ironMarketCount = ironMarketCount;
+    }
 }
