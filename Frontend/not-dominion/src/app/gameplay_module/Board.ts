@@ -110,6 +110,16 @@ export class Board
         
         return undefined;
     }
+
+    GetAsMine(index : number) : Mine | undefined
+    {
+        if (this.locationAndConnections[index].location instanceof Mine)
+        {
+            this.locationAndConnections[index].location as Mine
+        }
+        
+        return undefined;
+    }
     
     constructor(newLocationsAndConnections: { location : Location, connections : Connection[] }[]) 
     {

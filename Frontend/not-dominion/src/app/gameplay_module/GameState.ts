@@ -40,22 +40,59 @@ class PublicPlayerData
     victoryPoints : number;
     income : number;
     playerArea : PlayerArea;
+    discardPile : Card[];
 
     constructor(money : number, 
                 moneySpentInCurrentRound : number, 
                 victoryPoints : number,
-                income : number)
+                income : number,
+                discardPile : Card[])
     {
         this.money = money;
         this.moneySpentInCurrentRound = moneySpentInCurrentRound;
         this.victoryPoints = victoryPoints;
         this.income = income;
         this.playerArea = new PlayerArea(new GameConfig());
+        this.discardPile = discardPile;
+    }
+}
+
+class TileOnBoard
+{
+    townIndex : number;
+    tileIndex : number;
+    industryIndex : number;
+    industryLevel : number;
+    coal : number;
+    iron : number;
+    beer : number;
+    isFlipped : boolean;
+
+    constructor(townIndex : number,
+                tileIndex : number,
+                industryIndex : number,
+                industryLevel : number,
+                coal : number,
+                iron : number,
+                beer : number,
+                isFlipped : boolean)
+    {
+        this.townIndex = townIndex;
+        this.tileIndex = tileIndex;
+        this.industryIndex = industryIndex;
+        this.industryLevel = industryLevel;
+        this.coal = coal;
+        this.iron = iron;
+        this.beer = beer;
+        this.isFlipped = isFlipped;
     }
 }
 
 class PublicState 
 {
+    tilesOnBoard : TileOnBoard[];
+    isBeerOnMerchantTiles : boolean[];
+
     wildLocationCardsLeft : number;
     wildIndustryCardsLeft : number;
     numberOfCardsLeftInDeck : number;
@@ -70,7 +107,8 @@ class PublicState
 
     actionsRemainingInCurrentTurn : number;
 
-    constructor(wildLocationCardsLeft : number,
+    constructor(tilesOnBoard : TileOnBoard[],
+                wildLocationCardsLeft : number,
                 wildIndustryCardsLeft : number,
                 numberOfCardsLeftInDeck : number,
                 currentTurnOrder : number[],
@@ -80,6 +118,9 @@ class PublicState
                 ironMarketCount : number,
                 actionsRemainingInCurrentTurn: number)
     {
+        this.tilesOnBoard = tilesOnBoard;
+        this.isBeerOnMerchantTiles = Array(new GameConfig().board.mineIndexes.length).fill(true);
+        
         this.wildLocationCardsLeft = wildLocationCardsLeft;
         this.wildIndustryCardsLeft = wildIndustryCardsLeft;
         this.numberOfCardsLeftInDeck = numberOfCardsLeftInDeck;
