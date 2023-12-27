@@ -1,5 +1,3 @@
-import IndustriesFile from '../gameplay_module/Industries.json';
-
 class IndustryLevel
 {
     moneyCost: number; 
@@ -66,10 +64,5 @@ export class Industry
     {
         this.name = name;
         this.industryLevels = industryLevels;
-    }
-
-    static GetIndustries = () : Industry[] => 
-    {
-        return IndustriesFile;
     }
 }

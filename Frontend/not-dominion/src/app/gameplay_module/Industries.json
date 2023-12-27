@@ -18,7 +18,8 @@
                 "beerGeneratedRail": 0,
                 
                 "isOnlyInRail": false,
-                "developable": true
+                "developable": true,
+                "startingAmount": 3
 
             },
             {
@@ -37,7 +38,8 @@
                 "beerGeneratedRail": 0,
                 
                 "isOnlyInRail": false,
-                "developable": true
+                "developable": true,
+                "startingAmount": 2
             },
             {
                 "moneyCost": 16,
@@ -55,7 +57,8 @@
                 "beerGeneratedRail": 0,
                 
                 "isOnlyInRail": false,
-                "developable": true
+                "developable": true,
+                "startingAmount": 3
             },
             {
                 "moneyCost": 18,
@@ -73,7 +76,8 @@
                 "beerGeneratedRail": 0,
                 
                 "isOnlyInRail": false,
-                "developable": true
+                "developable": true,
+                "startingAmount": 3
             }
         ]
     },
@@ -96,7 +100,8 @@
                 "beerGeneratedRail": 0,
                 
                 "isOnlyInRail": false,
-                "developable": true
+                "developable": true,
+                "startingAmount": 1
             },
             {
                 "moneyCost": 7,
@@ -114,7 +119,8 @@
                 "beerGeneratedRail": 0,
                 
                 "isOnlyInRail": false,
-                "developable": true
+                "developable": true,
+                "startingAmount": 2
             },
             {
                 "moneyCost": 8,
@@ -132,7 +138,8 @@
                 "beerGeneratedRail": 0,
                 
                 "isOnlyInRail": false,
-                "developable": true
+                "developable": true,
+                "startingAmount": 2
             },
             {
                 "moneyCost": 10,
@@ -150,7 +157,8 @@
                 "beerGeneratedRail": 0,
                 
                 "isOnlyInRail": false,
-                "developable": true
+                "developable": true,
+                "startingAmount": 2
             }
         ]
     },
@@ -254,7 +262,8 @@
                 "beerGeneratedRail": 0,
                 
                 "isOnlyInRail": false,
-                "developable": true
+                "developable": true,
+                "startingAmount": 1
             },
             {
                 "moneyCost": 10,
@@ -272,7 +281,8 @@
                 "beerGeneratedRail": 0,
                 
                 "isOnlyInRail": false,
-                "developable": true
+                "developable": true,
+                "startingAmount": 2
             },
             {
                 "moneyCost": 12,
@@ -290,7 +300,8 @@
                 "beerGeneratedRail": 0,
                 
                 "isOnlyInRail": false,
-                "developable": true
+                "developable": true,
+                "startingAmount": 1
             },
             {
                 "moneyCost": 8,
@@ -308,7 +319,8 @@
                 "beerGeneratedRail": 0,
                 
                 "isOnlyInRail": false,
-                "developable": true
+                "developable": true,
+                "startingAmount": 1
             },
             {
                 "moneyCost": 16,
@@ -326,7 +338,8 @@
                 "beerGeneratedRail": 0,
                 
                 "isOnlyInRail": false,
-                "developable": true
+                "developable": true,
+                "startingAmount": 2
             },
             {
                 "moneyCost": 20,
@@ -344,7 +357,8 @@
                 "beerGeneratedRail": 0,
                 
                 "isOnlyInRail": false,
-                "developable": true
+                "developable": true,
+                "startingAmount": 1
             },
             {
                 "moneyCost": 16,
@@ -362,7 +376,8 @@
                 "beerGeneratedRail": 0,
                 
                 "isOnlyInRail": false,
-                "developable": true
+                "developable": true,
+                "startingAmount": 1
             },
             {
                 "moneyCost": 20,
@@ -380,7 +395,8 @@
                 "beerGeneratedRail": 0,
                 
                 "isOnlyInRail": false,
-                "developable": true
+                "developable": true,
+                "startingAmount": 2
             }
         ]
     },
@@ -403,7 +419,8 @@
                 "beerGeneratedRail": 1,
                 
                 "isOnlyInRail": false,
-                "developable": true
+                "developable": true,
+                "startingAmount": 2
             },
             {
                 "moneyCost": 7,
@@ -421,7 +438,8 @@
                 "beerGeneratedRail": 2,
                 
                 "isOnlyInRail": false,
-                "developable": true
+                "developable": true,
+                "startingAmount": 2
             },
             {
                 "moneyCost": 9,
@@ -439,7 +457,8 @@
                 "beerGeneratedRail": 2,
                 
                 "isOnlyInRail": false,
-                "developable": true
+                "developable": true,
+                "startingAmount": 2
             },
             {
                 "moneyCost": 9,
@@ -457,7 +476,8 @@
                 "beerGeneratedRail": 2,
                 
                 "isOnlyInRail": true,
-                "developable": true
+                "developable": true,
+                "startingAmount": 1
             }
         ]
     },
