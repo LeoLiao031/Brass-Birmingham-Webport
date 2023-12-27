@@ -1,6 +1,9 @@
 import { Industry } from "./Industries";
 import industriesData from './Industries.json';
 
+import { Board } from "./Board"
+import boardData from "./Board.json"
+
 class IndustrySection 
 {
     industryID : number;
@@ -100,4 +103,5 @@ class PublicState
 class GameConfig
 {
     industries : Industry[] = industriesData;
+    board : Board = new Board(boardData);
 }
