@@ -90,40 +90,45 @@ type IndexConnection =
     index : number;
 }
 
+type LocationAndConnections =
+{
+    location : Location;
+    connectionIndexes : IndexConnection[];
+}
+
 export class Board 
 {
-    locationList : Location[];
-    adjacencyList : Map<number, IndexConnection[]>;
+    locationAndConnections : LocationAndConnections[];
     mineIndexes : number[];
     
-    constructor(locationsAndConnections: { location : Location, connections : Connection[] }[]) 
+    constructor(newLocationsAndConnections: { location : Location, connections : Connection[] }[]) 
     {
-        this.locationList = locationsAndConnections.map(locationAndConnections => locationAndConnections.location);
+        this.locationAndConnections = [];
         this.mineIndexes = [];
 
-        this.adjacencyList = new Map<number, IndexConnection[]>();
-        let nameArray : string[] = this.locationList.map(locationAndConnections => locationAndConnections.name);
+        let nameArray : string[] = this.locationAndConnections.map(
+            locationAndConnections => locationAndConnections.location.name);
 
-        for (let i : number = 0; i < locationsAndConnections.length; i++) 
+        for (let i : number = 0; i < newLocationsAndConnections.length; i++) 
         {
-            if (locationsAndConnections[i].location instanceof Mine)
+            if (newLocationsAndConnections[i].location instanceof Mine)
             {
                 this.mineIndexes.push(i);
             }
 
             let connectionIndexes : IndexConnection[] = [];
-            for (let j : number = 0; j < locationsAndConnections[i].connections.length; j++) 
+            for (let j : number = 0; j < newLocationsAndConnections[i].connections.length; j++) 
             {
-                let connectionIndex : number = nameArray.indexOf(locationsAndConnections[i].connections[i].locationName);
+                let connectionIndex : number = nameArray.indexOf(newLocationsAndConnections[i].connections[i].locationName);
                 if (connectionIndex != -1) 
                 {
                     connectionIndexes.push({
-                        connectionType: locationsAndConnections[i].connections[i].connectionType,
+                        connectionType: newLocationsAndConnections[i].connections[i].connectionType,
                         index: connectionIndex});
                 }
             }
 
-            this.adjacencyList.set(i, connectionIndexes);
+            this.locationAndConnections[i].connectionIndexes = connectionIndexes;
         }
     }
 }
