@@ -1,4 +1,4 @@
-import { Card, LocalState, PrivateState, PublicPlayerData, PublicState } from "./GameState"
+import { LocalState, PrivateState, PublicPlayerData, PublicState } from "./GameState"
 import { GameConfig } from "./GameConfig"
 
 import industries from "../Data/Industries.json"

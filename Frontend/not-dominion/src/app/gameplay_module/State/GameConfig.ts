@@ -1,5 +1,4 @@
 import { Industry } from "./Industry";
-
 import { Board, LocationInit } from "./Board"
 
 export class GameConfig
