@@ -222,8 +222,193 @@
                     "locationName": "Derby"
                 }
             ]
-        }
-    
-
+        },
+        {
+            "location":
+            {
+               "name": "Oxford",
+               "linkPoints": 2,
+               "rewardType": 1,
+               "rewardValue": 2,
+               "merchantTilesCount": 2
+            },
+            "connections":
+            [
+                {
+                    "connectionType": 2,
+                    "locationName": "Redditch"
+                }
+            ]
+        },
+        {
+            "location":
+            {
+                "name": "Redditch",
+                "tiles": 
+                [
+                    {
+                        "allowedIndustries": [2, 4]
+                    },
+                    {
+                        "allowedIndustries": [3]
+                    }
+                ],
+                "playersRequiredForCard": 2
+            },
+            "connections":
+            [
+                {
+                    "connectionType": 2,
+                    "locationName": "Gloucester"
+                },
+                {
+                    "connectionType": 2,
+                    "locationName": "Oxford"
+                },
+                {
+                    "connectionType": 1,
+                    "locationName": "Birmingham"
+                }
+            ]
+        },
+        {
+            "location":
+            {
+                "name": "Birmingham",
+                "tiles": 
+                [
+                    {
+                        "allowedIndustries": [1, 4]
+                    },
+                    {
+                        "allowedIndustries": [4]
+                    },
+                    {
+                        "allowedIndustries": [4]
+                    },
+                    {
+                        "allowedIndustries": [3]
+                    }
+                ],
+                "playersRequiredForCard": 2
+            },
+            "connections":
+            [
+                {
+                    "connectionType": 1,
+                    "locationName": "Redditch"
+                },
+                {
+                    "connectionType": 2,
+                    "locationName": "Oxford"
+                },
+                {
+                    "connectionType": 2,
+                    "locationName": "Coventry"
+                },
+                {
+                    "connectionType": 1,
+                    "locationName": "Nuneaton"
+                },
+                {
+                    "connectionType": 2,
+                    "locationName": "Tamworth"
+                },
+                {
+                    "connectionType": 2,
+                    "locationName": "Walsall"
+                },
+                {
+                    "connectionType": 2,
+                    "locationName": "Dudley"
+                },
+                {
+                    "connectionType": 2,
+                    "locationName": "Worcester"
+                }
+            ]
+        },
+        {
+            "location":
+            {
+                "name": "Coventry",
+                "tiles": 
+                [
+                    {
+                        "allowedIndustries": [6]
+                    },
+                    {
+                        "allowedIndustries": [2, 4]
+                    },
+                    {
+                        "allowedIndustries": [3, 4]
+                    }
+                ],
+                "playersRequiredForCard": 2
+            },
+            "connections":
+            [
+                {
+                    "connectionType": 2,
+                    "locationName": "Birmingham"
+                },
+                {
+                    "connectionType": 1,
+                    "locationName": "Nuneaton"
+                }
+            ]
+        },
+        {
+            "location":
+            {
+                "name": "Nuneaton",
+                "tiles": 
+                [
+                    {
+                        "allowedIndustries": [4, 5]
+                    },
+                    {
+                        "allowedIndustries": [1, 2]
+                    }
+                ],
+                "playersRequiredForCard": 2
+            },
+            "connections":
+            [
+                {
+                    "connectionType": 1,
+                    "locationName": "Birmingham"
+                },
+                {
+                    "connectionType": 2,
+                    "locationName": "Coventry"
+                },
+                {
+                    "connectionType": 2,
+                    "locationName": "Tamworth"
+                }
+            ]
+        },
+        {
+            "location":
+            {
+               "name": "Gloucester",
+               "linkPoints": 2,
+               "rewardType": 0,
+               "rewardValue": 1,
+               "merchantTilesCount": 2
+            },
+            "connections":
+            [
+                {
+                    "connectionType": 2,
+                    "locationName": "Redditch"
+                },
+                {
+                    "connectionType": 2,
+                    "locationName": "Worcester"
+                }
+            ]
+        },
         
 ]
