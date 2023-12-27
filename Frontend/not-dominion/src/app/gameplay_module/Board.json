@@ -1,0 +1,66 @@
+[
+    {
+        "location":
+        {
+            "name": "Warrington",
+            "linkPoints": 2,
+            "rewardType": 3,
+            "rewardValue": 5,
+            "merchantTilesCount": 2
+             
+        },
+        "connections":
+        [
+            {
+                "connectionType": 2,
+                "locationName": "Stoke-on-Trent"
+            }
+        ]
+    },
+    {
+        "location":
+        {
+            "name": "Stoke-on-Trent",
+            "tiles": 
+            [
+                {
+                    "allowedIndustries":
+                    [
+                        1,
+                        4
+                    ]
+                },
+                {
+                    "allowedIndustries":
+                    [
+                        3,
+                        6
+                    ]
+                },
+                {
+                    "allowedIndustries":
+                    [
+                        4
+                    ]
+                }
+            ],
+            "playersRequiredForCard": 3
+        },
+        "connections":
+        [
+            {
+                "connectionType": 2,
+                "locationName": "Warrington"
+            },
+            {
+                "connectionType": 2,
+                "locationName": "Leek"
+            },
+            {
+                "connectionType": 2,
+                "locationName": "Stone"
+            }
+        ]
+    }
+
+]

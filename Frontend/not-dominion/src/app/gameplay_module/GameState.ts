@@ -1,5 +1,5 @@
 import { Industry } from "./Industries";
-import industriesData from '../gameplay_module/Industries.json';
+import industriesData from './Industries.json';
 
 class IndustrySection 
 {
