@@ -1,8 +1,4 @@
-import { Industry } from "./Industries";
-import industriesData from './Industries.json';
-
-import { Board } from "./Board"
-import boardData from "./Board.json"
+import { GameConfig } from "./GameConfig"
 
 class IndustrySection 
 {
@@ -20,16 +16,16 @@ class PlayerArea
 {
     section : IndustrySection[] = [];
 
-    constructor()
+    constructor(gameConfig : GameConfig)
     {
-        for (let i : number = 0; i < industriesData.length; i++) 
+        for (let i : number = 0; i < gameConfig.industries.length; i++) 
         {
             let startingAmount : number[] = [];
 
-            for (let level : number = 0; level < industriesData.length; level++)
+            for (let level : number = 0; level < gameConfig.industries.length; level++)
             {
                 startingAmount.push(
-                    industriesData[i].industryLevels[level].startingAmount);
+                    gameConfig.industries[i].industryLevels[level].startingAmount);
             }
 
             this.section.push(new IndustrySection(i, startingAmount));
@@ -54,7 +50,7 @@ class PublicPlayerData
         this.moneySpentInCurrentRound = moneySpentInCurrentRound;
         this.victoryPoints = victoryPoints;
         this.income = income;
-        this.playerArea = new PlayerArea();
+        this.playerArea = new PlayerArea(new GameConfig());
     }
 }
 
@@ -100,8 +96,24 @@ class PublicState
     }
 }
 
-class GameConfig
+enum CardType
 {
-    industries : Industry[] = industriesData;
-    board : Board = new Board(boardData);
+    Location,
+    Industry
+}
+
+type Card =
+{
+    type : CardType;
+    index : number;     
+}
+
+class PrivateState
+{
+    card : Card[];
+
+    constructor() 
+    {
+        this.card = [];
+    }
 }
