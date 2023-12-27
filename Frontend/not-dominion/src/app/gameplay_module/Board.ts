@@ -24,7 +24,7 @@ class Location
     }
 }
 
-class Town extends Location
+export class Town extends Location
 {
     tiles : Tile[];
     // Yellow, Purple, Red = At least 2 players
@@ -100,6 +100,16 @@ export class Board
 {
     locationAndConnections : LocationAndConnections[];
     mineIndexes : number[];
+
+    GetAsTown(index : number) : Town | undefined
+    {
+        if (this.locationAndConnections[index].location instanceof Town)
+        {
+            this.locationAndConnections[index].location as Town
+        }
+        
+        return undefined;
+    }
     
     constructor(newLocationsAndConnections: { location : Location, connections : Connection[] }[]) 
     {

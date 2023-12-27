@@ -105,15 +105,44 @@ enum CardType
 type Card =
 {
     type : CardType;
-    index : number;     
+    indexes : number[];     
 }
 
 class PrivateState
 {
-    card : Card[];
+    deck : Card[];
 
-    constructor() 
+    Shuffle() : void
     {
-        this.card = [];
+        this.deck.sort(() => Math.random() - 0.5); 
+    }
+
+    constructor(gameConfig : GameConfig) 
+    {
+        this.deck = [];
+
+        for (let i : number = 0; i < gameConfig.board.locationAndConnections.length; i++)
+        {
+            let Town = gameConfig.board.GetAsTown(i);
+            if (Town != undefined && Town.name)
+            {
+                this.deck.push({type: CardType.Location, indexes: [i]})
+            }
+        }
+
+        for (let i : number = 0; i < gameConfig.industryCards.length; i++)
+        {
+            this.deck.push({type: CardType.Industry, indexes: gameConfig.industryCards[i]})
+        }
+    }
+}
+
+class LocalState
+{
+    hand : Card[];
+
+    constructor(hand : Card[]) 
+    {
+        this.hand = hand;
     }
 }
