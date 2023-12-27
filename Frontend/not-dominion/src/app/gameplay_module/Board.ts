@@ -27,7 +27,7 @@ class Location
 class Town extends Location
 {
     tiles : Tile[];
-    // Yellow = At least 2 players
+    // Yellow, Purple, Red = At least 2 players
     // Blue = At least 3 players
     // Green = At least 4 players
     playersRequiredForCard : number;
