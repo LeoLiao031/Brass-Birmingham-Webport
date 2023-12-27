@@ -1,10 +1,10 @@
 import { Industry } from "./Industries";
-import industriesData from './Industries.json';
+import industriesData from './Data/Industries.json';
 
 import { Board } from "./Board"
-import boardData from "./Board.json"
+import boardData from "./Data/Board.json"
 
-import industryCardData from "./IndustryCards.json"
+import industryCardData from "./Data/IndustryCards.json"
 
 export class GameConfig
 {
