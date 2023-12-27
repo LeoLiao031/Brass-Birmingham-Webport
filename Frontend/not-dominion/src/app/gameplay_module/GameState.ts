@@ -67,6 +67,7 @@ class TileOnBoard
     iron : number;
     beer : number;
     isFlipped : boolean;
+    ownerID : number;
 
     constructor(townIndex : number,
                 tileIndex : number,
@@ -75,7 +76,8 @@ class TileOnBoard
                 coal : number,
                 iron : number,
                 beer : number,
-                isFlipped : boolean)
+                isFlipped : boolean,
+                ownerID : number)
     {
         this.townIndex = townIndex;
         this.tileIndex = tileIndex;
@@ -85,6 +87,23 @@ class TileOnBoard
         this.iron = iron;
         this.beer = beer;
         this.isFlipped = isFlipped;
+        this.ownerID = ownerID;
+    }
+}
+
+class Link
+{
+    locationIndexA : number;
+    locationIndexB : number;
+    ownerID : number;
+
+    constructor(locationIndexA : number,
+            locationIndexB : number,
+            ownerID : number)
+    {
+        this.locationIndexA = locationIndexA;
+        this.locationIndexB = locationIndexB;
+        this.ownerID = ownerID;
     }
 }
 
@@ -92,6 +111,7 @@ class PublicState
 {
     tilesOnBoard : TileOnBoard[];
     isBeerOnMerchantTiles : boolean[];
+    links : Link[];
 
     wildLocationCardsLeft : number;
     wildIndustryCardsLeft : number;
@@ -107,7 +127,10 @@ class PublicState
 
     actionsRemainingInCurrentTurn : number;
 
+    isRailEra : boolean;
+
     constructor(tilesOnBoard : TileOnBoard[],
+                links : Link[],
                 wildLocationCardsLeft : number,
                 wildIndustryCardsLeft : number,
                 numberOfCardsLeftInDeck : number,
@@ -116,10 +139,12 @@ class PublicState
                 publicPlayerData : PublicPlayerData[],
                 coalMarketCount : number,
                 ironMarketCount : number,
-                actionsRemainingInCurrentTurn: number)
+                actionsRemainingInCurrentTurn: number,
+                isRailEra : boolean)
     {
         this.tilesOnBoard = tilesOnBoard;
         this.isBeerOnMerchantTiles = Array(new GameConfig().board.mineIndexes.length).fill(true);
+        this.links = links;
         
         this.wildLocationCardsLeft = wildLocationCardsLeft;
         this.wildIndustryCardsLeft = wildIndustryCardsLeft;
@@ -134,6 +159,8 @@ class PublicState
         this.ironMarketCount = ironMarketCount;
 
         this.actionsRemainingInCurrentTurn = actionsRemainingInCurrentTurn;
+
+        this.isRailEra = isRailEra;
     }
 }
 
