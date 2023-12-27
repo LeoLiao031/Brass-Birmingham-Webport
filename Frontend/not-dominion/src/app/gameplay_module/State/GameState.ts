@@ -225,4 +225,17 @@ export class LocalState
     {
         this.hand = hand;
     }
+
+    HasCard(card : Card) : boolean
+    {
+        for (let i = 0; i < this.hand.length; i++) 
+        {
+            if (this.hand[i] == card)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

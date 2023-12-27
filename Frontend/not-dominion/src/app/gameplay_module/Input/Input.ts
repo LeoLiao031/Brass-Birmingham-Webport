@@ -1,6 +1,6 @@
 import { Card } from "../State/GameState";
 
-enum InputType
+export enum InputType
 {
     Build,
     Network,
@@ -10,7 +10,7 @@ enum InputType
     Scout
 }
 
-enum DataType
+export enum DataType
 {
     // First number in the stack denotes index of location
     // Second denotes tile in the location
@@ -22,7 +22,7 @@ enum DataType
     Link
 }
 
-class Data
+export class Data
 {
     dataType : DataType;
     stack : number[];
@@ -35,18 +35,21 @@ class Data
     }
 }
 
-class Input
+export class Input
 {
     cardUsed : Card;
     inputType : InputType;
     data : Data[];
+    playerID : number;
 
     constructor(cardUsed : Card,
                 inputType : InputType,
-                data : Data[])
+                data : Data[],
+                playerID : number)
     {
         this.cardUsed = cardUsed;
         this.inputType = inputType;
         this.data = data;
+        this.playerID = playerID;
     }
 }
