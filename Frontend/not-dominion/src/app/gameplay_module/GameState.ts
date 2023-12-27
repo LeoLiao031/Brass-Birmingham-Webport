@@ -33,7 +33,7 @@ class PlayerArea
     }
 }
 
-class PublicPlayerData
+export class PublicPlayerData
 {
     money : number;
     moneySpentInCurrentRound : number;
@@ -42,18 +42,16 @@ class PublicPlayerData
     playerArea : PlayerArea;
     discardPile : Card[];
 
-    constructor(money : number, 
-                moneySpentInCurrentRound : number, 
-                victoryPoints : number,
-                income : number,
-                discardPile : Card[])
+    constructor(gameConfig : GameConfig,
+                money : number,
+                income : number)
     {
         this.money = money;
-        this.moneySpentInCurrentRound = moneySpentInCurrentRound;
-        this.victoryPoints = victoryPoints;
+        this.moneySpentInCurrentRound = 0;
+        this.victoryPoints = 0;
         this.income = income;
-        this.playerArea = new PlayerArea(new GameConfig());
-        this.discardPile = discardPile;
+        this.playerArea = new PlayerArea(gameConfig);
+        this.discardPile = [];
     }
 }
 
@@ -107,14 +105,12 @@ class Link
     }
 }
 
-class PublicState 
+export class PublicState 
 {
     tilesOnBoard : TileOnBoard[];
     isBeerOnMerchantTiles : boolean[];
     links : Link[];
 
-    wildLocationCardsLeft : number;
-    wildIndustryCardsLeft : number;
     numberOfCardsLeftInDeck : number;
 
     currentTurnOrder : number[];
@@ -129,38 +125,30 @@ class PublicState
 
     isRailEra : boolean;
 
-    constructor(tilesOnBoard : TileOnBoard[],
-                links : Link[],
-                wildLocationCardsLeft : number,
-                wildIndustryCardsLeft : number,
-                numberOfCardsLeftInDeck : number,
-                currentTurnOrder : number[],
-                currentTurnIndex : number,
-                publicPlayerData : PublicPlayerData[],
+    constructor(gameConfig : GameConfig,
+                privateState : PrivateState,
+                startingPlayerData : PublicPlayerData,
+                numberOfPlayers : number,
                 coalMarketCount : number,
-                ironMarketCount : number,
-                actionsRemainingInCurrentTurn: number,
-                isRailEra : boolean)
+                ironMarketCount : number)
     {
-        this.tilesOnBoard = tilesOnBoard;
-        this.isBeerOnMerchantTiles = Array(new GameConfig().board.mineIndexes.length).fill(true);
-        this.links = links;
+        this.tilesOnBoard = [];
+        this.isBeerOnMerchantTiles = Array(gameConfig.board.mineIndexes.length).fill(true);
+        this.links = [];
         
-        this.wildLocationCardsLeft = wildLocationCardsLeft;
-        this.wildIndustryCardsLeft = wildIndustryCardsLeft;
-        this.numberOfCardsLeftInDeck = numberOfCardsLeftInDeck;
+        this.numberOfCardsLeftInDeck = privateState.deck.length;
 
-        this.currentTurnOrder = currentTurnOrder;
-        this.currentTurnIndex = currentTurnIndex;
+        this.currentTurnOrder = Array.from(Array(numberOfPlayers).keys());
+        this.currentTurnIndex = 0;
 
-        this.publicPlayerData = publicPlayerData;
+        this.publicPlayerData = Array(numberOfPlayers).fill(startingPlayerData);
 
         this.coalMarketCount = coalMarketCount;
         this.ironMarketCount = ironMarketCount;
 
-        this.actionsRemainingInCurrentTurn = actionsRemainingInCurrentTurn;
+        this.actionsRemainingInCurrentTurn = 2;
 
-        this.isRailEra = isRailEra;
+        this.isRailEra = false;
     }
 }
 
@@ -170,19 +158,41 @@ enum CardType
     Industry
 }
 
-type Card =
+export type Card =
 {
     type : CardType;
-    indexes : number[];     
+    indexes : number[];
+    isWild : boolean;     
 }
 
-class PrivateState
+export class PrivateState
 {
     deck : Card[];
 
     Shuffle() : void
     {
         this.deck.sort(() => Math.random() - 0.5); 
+    }
+
+    Draw() : Card | undefined
+    {
+        return this.deck.pop();
+    }
+
+    DrawMultiple(amount : number) : Card[]
+    {
+        let cards : Card[] = [];
+        for (let i : number = 0; i < amount; i++)
+        {
+            let card = this.Draw();
+            if (card == undefined)
+            {
+                return cards;
+            }
+            cards.push(card);
+        }
+
+        return cards;
     }
 
     constructor(gameConfig : GameConfig) 
@@ -194,18 +204,20 @@ class PrivateState
             let Town = gameConfig.board.GetAsTown(i);
             if (Town != undefined && Town.name)
             {
-                this.deck.push({type: CardType.Location, indexes: [i]})
+                this.deck.push({type: CardType.Location, indexes: [i], isWild: false})
             }
         }
 
         for (let i : number = 0; i < gameConfig.industryCards.length; i++)
         {
-            this.deck.push({type: CardType.Industry, indexes: gameConfig.industryCards[i]})
+            this.deck.push({type: CardType.Industry, indexes: gameConfig.industryCards[i], isWild: false})
         }
+
+        this.Shuffle();
     }
 }
 
-class LocalState
+export class LocalState
 {
     hand : Card[];
 

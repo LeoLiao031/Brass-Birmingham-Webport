@@ -1,10 +1,6 @@
 import { Industry } from "./Industry";
-import industriesData from './Data/Industries.json';
 
-import { Board } from "./Board"
-import boardData from "./Data/Board.json"
-
-import industryCardData from "./Data/IndustryCards.json"
+import { Board, LocationInit } from "./Board"
 
 export class GameConfig
 {
@@ -15,12 +11,14 @@ export class GameConfig
 
     merchantTiles : number[];
 
-    constructor()
+    constructor(industries : Industry[],
+                industryCards : number[][],
+                boardInit : LocationInit[])
     {
-        this.industries = industriesData;
-        this.industryCards = industryCardData;
+        this.industries = industries;
+        this.industryCards = industryCards;
 
-        this.board = new Board(boardData);
+        this.board = new Board(boardInit);
 
         this.merchantTiles = [];
 

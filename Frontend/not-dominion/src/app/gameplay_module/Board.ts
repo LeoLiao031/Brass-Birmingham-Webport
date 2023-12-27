@@ -78,12 +78,6 @@ class Mine extends Location
     }
 }
 
-type Connection = 
-{
-    connectionType : ConnectionType;
-    locationName : string;
-}
-
 type IndexConnection = 
 {
     connectionType : ConnectionType;
@@ -94,6 +88,16 @@ type LocationAndConnections =
 {
     location : Location;
     connectionIndexes : IndexConnection[];
+}
+
+export type LocationInit = 
+{
+    location : Location;
+    connections : 
+    { 
+        connectionType : ConnectionType;
+        locationName : string;
+    }[] 
 }
 
 export class Board 
@@ -121,7 +125,7 @@ export class Board
         return undefined;
     }
     
-    constructor(newLocationsAndConnections: { location : Location, connections : Connection[] }[]) 
+    constructor(boardInit : LocationInit[]) 
     {
         this.locationAndConnections = [];
         this.mineIndexes = [];
@@ -129,21 +133,21 @@ export class Board
         let nameArray : string[] = this.locationAndConnections.map(
             locationAndConnections => locationAndConnections.location.name);
 
-        for (let i : number = 0; i < newLocationsAndConnections.length; i++) 
+        for (let i : number = 0; i < boardInit.length; i++) 
         {
-            if (newLocationsAndConnections[i].location instanceof Mine)
+            if (boardInit[i].location instanceof Mine)
             {
                 this.mineIndexes.push(i);
             }
 
             let connectionIndexes : IndexConnection[] = [];
-            for (let j : number = 0; j < newLocationsAndConnections[i].connections.length; j++) 
+            for (let j : number = 0; j < boardInit[i].connections.length; j++) 
             {
-                let connectionIndex : number = nameArray.indexOf(newLocationsAndConnections[i].connections[i].locationName);
+                let connectionIndex : number = nameArray.indexOf(boardInit[i].connections[i].locationName);
                 if (connectionIndex != -1) 
                 {
                     connectionIndexes.push({
-                        connectionType: newLocationsAndConnections[i].connections[i].connectionType,
+                        connectionType: boardInit[i].connections[i].connectionType,
                         index: connectionIndex});
                 }
             }
