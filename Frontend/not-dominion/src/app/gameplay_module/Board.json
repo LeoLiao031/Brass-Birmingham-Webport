@@ -24,24 +24,13 @@
             "tiles": 
             [
                 {
-                    "allowedIndustries":
-                    [
-                        1,
-                        4
-                    ]
+                    "allowedIndustries": [1, 4]
                 },
                 {
-                    "allowedIndustries":
-                    [
-                        3,
-                        6
-                    ]
+                    "allowedIndustries": [3, 6]
                 },
                 {
-                    "allowedIndustries":
-                    [
-                        4
-                    ]
+                    "allowedIndustries": [4]
                 }
             ],
             "playersRequiredForCard": 3
@@ -61,6 +50,180 @@
                 "locationName": "Stone"
             }
         ]
-    }
+    },
+    {
+        "location": {
+            "name": "Leek",
+            "tiles": 
+                [
+                    {
+                        "allowedIndustries": [1, 4]
+                    },
+                    {
+                        "allowedIndustries": [1, 2]
+                    }
+                ],
+                "playerRequiredForCards": 3
+            },
+            "connections": 
+            [
+                {
+                    "connectionType": 2,
+                    "locationName":"Warrington"
+                },
+                {
+                    "connectionType": 1,
+                    "locationName":"Belper"
+                }
+            ]
+        },
+        {
+            "location": {
+                "name": "Stone",
+                "tiles": 
+                    [
+                        {
+                            "allowedIndustries": [1, 5]
+                        },
+                        {
+                            "allowedIndustries": [2, 4]
+                        }
+                    ],
+                    "playerRequiredForCards": 3
+                },
+                "connections": 
+                [
+                    {
+                        "connectionType": 2,
+                        "locationName":"Stoke-on-Trent"
+                    },
+                    {
+                        "connectionType": 1,
+                        "locationName":"Uttoxeter"
+                    },
+                    {
+                        "connectionType": 2,
+                        "locationName": "Burton-on-Trent"
+                    },
+                    {
+                        "connectionType": 2,
+                        "locationName": "Stafford"
+                    }
+                ]
+        },
+        {
+            "location": {
+                "name": "Uttoxeter",
+                "tiles": 
+                    [
+                        {
+                            "allowedIndustries": [4, 5]
+                        },
+                        {
+                            "allowedIndustries": [1, 5]
+                        }
+                    ],
+                    "playerRequiredForCards": 3
+                },
+                "connections": 
+                [
+                    {
+                        "connectionType": 1,
+                        "locationName":"Stone"
+                    },
+                    {
+                        "connectionType": 1,
+                        "locationName":"Derby"
+                    }
+                ]
+        },
+        {
+            "location":
+            {
+                "name": "Nottingham",
+                "linkPoints": 2,
+                "rewardType": 2,
+                "rewardValue": 0,
+                "merchantTilesCount": 2
+                 
+            },
+            "connections":
+            [
+                {
+                    "connectionType": 2,
+                    "locationName": "Derby"
+                }
+            ]
+        },
+        {
+            "location":
+            {
+                "name": "Derby",
+                "tiles": 
+                [
+                    {
+                        "allowedIndustries": [1, 5]
+                    },
+                    {
+                        "allowedIndustries": [1, 4]
+                    },
+                    {
+                        "allowedIndustries": [3]
+                    }
+                ],
+                "playersRequiredForCard": 4
+            },
+            "connections":
+            [
+                {
+                    "connectionType": 2,
+                    "locationName": "Nottingham"
+                },
+                {
+                    "connectionType": 1,
+                    "locationName": "Uttoxeter"
+                },
+                {
+                    "connectionType": 2,
+                    "locationName": "Belper"
+                },
+                {
+                    "connectionType": 2,
+                    "locationName":"Burton-on-Trent"
+                }
+            ]
+        },
+        {
+            "location":
+            {
+                "name": "Belper",
+                "tiles": 
+                [
+                    {
+                        "allowedIndustries": [1, 4]
+                    },
+                    {
+                        "allowedIndustries": [2]
+                    },
+                    {
+                        "allowedIndustries": [6]
+                    }
+                ],
+                "playersRequiredForCard": 4
+            },
+            "connections":
+            [
+                {
+                    "connectionType": 1,
+                    "locationName": "Leek"
+                },
+                {
+                    "connectionType": 2,
+                    "locationName": "Derby"
+                }
+            ]
+        }
+    
 
+        
 ]
