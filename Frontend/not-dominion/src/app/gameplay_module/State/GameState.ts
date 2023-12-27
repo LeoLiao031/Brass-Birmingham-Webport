@@ -152,7 +152,7 @@ export class PublicState
     }
 }
 
-enum CardType
+export enum CardType
 {
     Location,
     Industry
