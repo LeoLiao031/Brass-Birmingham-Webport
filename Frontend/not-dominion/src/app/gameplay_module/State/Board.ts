@@ -1,11 +1,11 @@
 class Tile 
 {
-    // 1 = House
-    // 2 = Coal
-    // 3 = Iron
-    // 4 = Crate
-    // 5 = Brewery
-    // 6 = Pottery
+    // 0 = House
+    // 1 = Coal
+    // 2 = Iron
+    // 3 = Crate
+    // 4 = Brewery
+    // 5 = Pottery
     allowedIndustries : number[];
 
     constructor(allowedIndustries : number[]) 
