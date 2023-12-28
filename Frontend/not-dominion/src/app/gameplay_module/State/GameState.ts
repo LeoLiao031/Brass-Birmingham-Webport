@@ -195,22 +195,33 @@ export class PrivateState
         return cards;
     }
 
-    constructor(gameConfig : GameConfig) 
+    constructor(gameConfig : GameConfig, numberOfPlayers : number) 
     {
         this.deck = [];
 
         for (let i : number = 0; i < gameConfig.board.locationAndConnections.length; i++)
         {
             let Town = gameConfig.board.GetAsTown(i);
-            if (Town != undefined && Town.name)
+            if (Town != undefined && Town.name && Town.cardCountForPlayerCounts.length >= (numberOfPlayers-1))
             {
-                this.deck.push({type: CardType.Location, indexes: [i], isWild: false})
+                let copiesOfCard = Town.cardCountForPlayerCounts[numberOfPlayers-2];
+                for (let j : number = 0; i < copiesOfCard; i++)
+                {
+                    this.deck.push({type: CardType.Location, indexes: [i], isWild: false})
+                }
             }
         }
 
         for (let i : number = 0; i < gameConfig.industryCards.length; i++)
         {
-            this.deck.push({type: CardType.Industry, indexes: gameConfig.industryCards[i], isWild: false})
+            if (gameConfig.industryCards[i].cardCountForPlayerCounts.length >= (numberOfPlayers-1)) 
+            {
+                let copiesOfCard = gameConfig.industryCards[i].cardCountForPlayerCounts[numberOfPlayers-2];
+                for (let j : number = 0; i < copiesOfCard; i++)
+                {
+                    this.deck.push({type: CardType.Industry, indexes: gameConfig.industryCards[i].industries, isWild: false})
+                }
+            }
         }
 
         this.Shuffle();

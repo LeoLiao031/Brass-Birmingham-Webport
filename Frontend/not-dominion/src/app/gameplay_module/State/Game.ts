@@ -1,19 +1,19 @@
 import { LocalState, PrivateState, PublicPlayerData, PublicState } from "./GameState"
 import { GameConfig } from "./GameConfig"
 
-import industries from "../Data/Industries.json"
-import industryCards from "../Data/IndustryCards.json"
-import board from "../Data/Board.json"
+import industries from "./Data/Industries.json"
+import industryCards from "./Data/IndustryCards.json"
+import board from "./Data/Board.json"
 
 
-import initGameData from "../Data/InitGameData.json"
-import initPlayerData from "../Data/InitPlayerData.json"
+import initGameData from "./Data/InitGameData.json"
+import initPlayerData from "./Data/InitPlayerData.json"
 
 let numberOfPlayers : number = 4;
 
 let gameConfig : GameConfig = new GameConfig(industries, industryCards, board);
 
-let privateState : PrivateState = new PrivateState(gameConfig);
+let privateState : PrivateState = new PrivateState(gameConfig, numberOfPlayers);
 
 let LocalStates : LocalState[] = [];
 for (let i : number = 0; i < numberOfPlayers; i++)

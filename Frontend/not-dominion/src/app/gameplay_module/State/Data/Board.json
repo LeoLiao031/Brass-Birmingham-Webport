@@ -36,7 +36,12 @@
                 ]
              }
           ],
-          "playersRequiredForCard":3
+          "cardCountForPlayerCounts":
+          [
+            0,
+            3,
+            3
+          ]
        },
        "connections":[
           {
@@ -70,7 +75,12 @@
                 ]
              }
           ],
-          "playerRequiredForCards":3
+          "cardCountForPlayerCounts":
+          [
+            0,
+            2,
+            2
+          ]
        },
        "connections":[
           {
@@ -100,7 +110,12 @@
                 ]
              }
           ],
-          "playerRequiredForCards":3
+          "cardCountForPlayerCounts":
+          [
+            0,
+            2,
+            2
+          ]
        },
        "connections":[
           {
@@ -138,7 +153,12 @@
                 ]
              }
           ],
-          "playerRequiredForCards":3
+          "cardCountForPlayerCounts":
+          [
+            0,
+            1,
+            2
+          ]
        },
        "connections":[
           {
@@ -188,7 +208,12 @@
                 ]
              }
           ],
-          "playersRequiredForCard":4
+          "cardCountForPlayerCounts":
+          [
+            0,
+            0,
+            3
+          ]
        },
        "connections":[
           {
@@ -230,7 +255,12 @@
                 ]
              }
           ],
-          "playersRequiredForCard":4
+          "cardCountForPlayerCounts":
+          [
+            0,
+            0,
+            2
+          ]
        },
        "connections":[
           {
@@ -274,7 +304,12 @@
                 ]
              }
           ],
-          "playersRequiredForCard":2
+          "cardCountForPlayerCounts":
+          [
+            1,
+            1,
+            1
+          ]
        },
        "connections":[
           {
@@ -317,7 +352,12 @@
                 ]
              }
           ],
-          "playersRequiredForCard":2
+          "cardCountForPlayerCounts":
+          [
+            3,
+            3,
+            3
+          ]
        },
        "connections":[
           {
@@ -376,7 +416,12 @@
                 ]
              }
           ],
-          "playersRequiredForCard":2
+          "cardCountForPlayerCounts":
+          [
+            3,
+            3,
+            3
+          ]
        },
        "connections":[
           {
@@ -406,7 +451,12 @@
                 ]
              }
           ],
-          "playersRequiredForCard":2
+          "cardCountForPlayerCounts":
+          [
+            1,
+            1,
+            1
+          ]
        },
        "connections":[
           {

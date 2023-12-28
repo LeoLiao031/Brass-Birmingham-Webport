@@ -1,17 +1,23 @@
 import { Industry } from "./Industry";
 import { Board, LocationInit } from "./Board"
 
+export type IndustryCard =
+{
+    industries : number[];
+    cardCountForPlayerCounts : number[];
+}
+
 export class GameConfig
 {
     industries : Industry[];
-    industryCards : number[][];
+    industryCards : IndustryCard[];
 
     board : Board;
 
     merchantTiles : number[];
 
     constructor(industries : Industry[],
-                industryCards : number[][],
+                industryCards : IndustryCard[],
                 boardInit : LocationInit[])
     {
         this.industries = industries;

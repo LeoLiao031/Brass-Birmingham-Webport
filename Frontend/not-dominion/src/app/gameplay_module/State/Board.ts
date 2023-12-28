@@ -27,18 +27,16 @@ class Location
 export class Town extends Location
 {
     tiles : Tile[];
-    // Yellow, Purple, Red = At least 2 players
-    // Blue = At least 3 players
-    // Green = At least 4 players
-    playersRequiredForCard : number;
+    // Starting from 2 players
+    cardCountForPlayerCounts : number[];
 
     constructor(name : string,
                 tiles : Tile[], 
-                playersRequiredForCard : number) 
+                cardCountForPlayerCounts : number[]) 
     {
         super(name);
         this.tiles = tiles
-        this.playersRequiredForCard = playersRequiredForCard
+        this.cardCountForPlayerCounts = cardCountForPlayerCounts
     }
 }
 
