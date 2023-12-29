@@ -84,13 +84,13 @@ type IndexConnection =
 
 type LocationAndConnections =
 {
-    location : Location;
+    location : Town | Mine;
     connectionIndexes : IndexConnection[];
 }
 
 export type LocationInit = 
 {
-    location : Location;
+    location : Mine | Town;
     connections : 
     { 
         connectionType : ConnectionType;
@@ -105,9 +105,9 @@ export class Board
 
     GetAsTown(index : number) : Town | undefined
     {
-        if (this.locationAndConnections[index].location instanceof Town)
+        if ("tiles" in this.locationAndConnections[index].location)
         {
-            this.locationAndConnections[index].location as Town
+            return this.locationAndConnections[index].location as Town
         }
         
         return undefined;
@@ -115,9 +115,9 @@ export class Board
 
     GetAsMine(index : number) : Mine | undefined
     {
-        if (this.locationAndConnections[index].location instanceof Mine)
+        if ("linkPoints" in this.locationAndConnections[index].location)
         {
-            this.locationAndConnections[index].location as Mine
+            return this.locationAndConnections[index].location as Mine
         }
         
         return undefined;
@@ -128,12 +128,13 @@ export class Board
         this.locationAndConnections = [];
         this.mineIndexes = [];
 
-        let nameArray : string[] = this.locationAndConnections.map(
+        let nameArray : string[] = boardInit.map(
             locationAndConnections => locationAndConnections.location.name);
 
         for (let i : number = 0; i < boardInit.length; i++) 
         {
-            if (boardInit[i].location instanceof Mine)
+            // Checking if it's a mine. Can't find a cleaner way to do this :(
+            if ("linkPoints" in boardInit[i].location)
             {
                 this.mineIndexes.push(i);
             }
@@ -141,16 +142,18 @@ export class Board
             let connectionIndexes : IndexConnection[] = [];
             for (let j : number = 0; j < boardInit[i].connections.length; j++) 
             {
-                let connectionIndex : number = nameArray.indexOf(boardInit[i].connections[i].locationName);
-                if (connectionIndex != -1) 
+                let connectionIndex : number = nameArray.indexOf(boardInit[i].connections[j].locationName);
+                if (connectionIndex == -1)
                 {
-                    connectionIndexes.push({
-                        connectionType: boardInit[i].connections[i].connectionType,
-                        index: connectionIndex});
+                    console.log("Error: " + boardInit[i].connections[j].locationName + 
+                    " does not exist. It was entered as a connection to " + boardInit[i].location.name)
                 }
+                connectionIndexes.push({
+                    connectionType: boardInit[i].connections[j].connectionType,
+                    index: connectionIndex});
             }
 
-            this.locationAndConnections[i].connectionIndexes = connectionIndexes;
+            this.locationAndConnections.push({ location: boardInit[i].location, connectionIndexes: connectionIndexes});
         }
     }
 }

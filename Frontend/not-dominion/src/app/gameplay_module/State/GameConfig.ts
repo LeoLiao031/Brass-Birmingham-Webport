@@ -16,9 +16,14 @@ export class GameConfig
 
     merchantTiles : number[];
 
+    cardsInEachHand : number;
+    numberOfPlayers : number;
+
     constructor(industries : Industry[],
                 industryCards : IndustryCard[],
-                boardInit : LocationInit[])
+                boardInit : LocationInit[],
+                cardsInEachHand : number,
+                numberOfPlayers : number)
     {
         this.industries = industries;
         this.industryCards = industryCards;
@@ -26,6 +31,9 @@ export class GameConfig
         this.board = new Board(boardInit);
 
         this.merchantTiles = [];
+
+        this.cardsInEachHand = cardsInEachHand;
+        this.numberOfPlayers = numberOfPlayers;
 
         for (let i : number = 0; i < this.board.mineIndexes.length; i++)
         {

@@ -499,7 +499,7 @@
           "linkPoints": 2,
           "rewardType": 2,
           "rewardValue": 4,
-          "mechantTilesCount": 1
+          "merchantTilesCount": 1
       },
       "connections":
       [
@@ -683,10 +683,6 @@
           },
           {
               "connectionType": 2,
-              "locationName": ""
-          },
-          {
-              "connectionType": 2,
               "locationName": "Worcester"
           }
       ]
@@ -726,10 +722,6 @@
           {
               "connectionType": 2,
               "locationName": "Kidderminster"
-          },
-          {
-              "connectionType": 2,
-              "locationName": ""
           },
           {
               "connectionType": 2,

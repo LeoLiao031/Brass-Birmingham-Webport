@@ -22,7 +22,7 @@ class PlayerArea
         {
             let startingAmount : number[] = [];
 
-            for (let level : number = 0; level < gameConfig.industries.length; level++)
+            for (let level : number = 0; level < gameConfig.industries[i].industryLevels.length; level++)
             {
                 startingAmount.push(
                     gameConfig.industries[i].industryLevels[level].startingAmount);
@@ -128,7 +128,6 @@ export class PublicState
     constructor(gameConfig : GameConfig,
                 privateState : PrivateState,
                 startingPlayerData : PublicPlayerData,
-                numberOfPlayers : number,
                 coalMarketCount : number,
                 ironMarketCount : number)
     {
@@ -138,10 +137,10 @@ export class PublicState
         
         this.numberOfCardsLeftInDeck = privateState.deck.length;
 
-        this.currentTurnOrder = Array.from(Array(numberOfPlayers).keys());
+        this.currentTurnOrder = Array.from(Array(gameConfig.numberOfPlayers).keys());
         this.currentTurnIndex = 0;
 
-        this.publicPlayerData = Array(numberOfPlayers).fill(startingPlayerData);
+        this.publicPlayerData = Array(gameConfig.numberOfPlayers).fill(startingPlayerData);
 
         this.coalMarketCount = coalMarketCount;
         this.ironMarketCount = ironMarketCount;
@@ -195,31 +194,35 @@ export class PrivateState
         return cards;
     }
 
-    constructor(gameConfig : GameConfig, numberOfPlayers : number) 
+    constructor(gameConfig : GameConfig) 
     {
         this.deck = [];
+
+        let numberOfPlayersIndex : number = gameConfig.numberOfPlayers - 2;
 
         for (let i : number = 0; i < gameConfig.board.locationAndConnections.length; i++)
         {
             let Town = gameConfig.board.GetAsTown(i);
-            if (Town != undefined && Town.name && Town.cardCountForPlayerCounts.length >= (numberOfPlayers-1))
+            if (Town != undefined && Town.cardCountForPlayerCounts.length >= (gameConfig.numberOfPlayers-1))
             {
-                let copiesOfCard = Town.cardCountForPlayerCounts[numberOfPlayers-2];
-                for (let j : number = 0; i < copiesOfCard; i++)
+                let copiesOfCard = Town.cardCountForPlayerCounts[numberOfPlayersIndex];
+                for (let j : number = 0; j < copiesOfCard; j++)
                 {
-                    this.deck.push({type: CardType.Location, indexes: [i], isWild: false})
+                    console.log("Pushed");
+                    this.deck.push({type: CardType.Location, indexes: [i], isWild: false});
                 }
             }
         }
 
         for (let i : number = 0; i < gameConfig.industryCards.length; i++)
         {
-            if (gameConfig.industryCards[i].cardCountForPlayerCounts.length >= (numberOfPlayers-1)) 
+            if (gameConfig.industryCards[i].cardCountForPlayerCounts.length >= (gameConfig.numberOfPlayers-1)) 
             {
-                let copiesOfCard = gameConfig.industryCards[i].cardCountForPlayerCounts[numberOfPlayers-2];
-                for (let j : number = 0; i < copiesOfCard; i++)
+                let copiesOfCard = gameConfig.industryCards[i].cardCountForPlayerCounts[numberOfPlayersIndex];
+                for (let j : number = 0; j < copiesOfCard; j++)
                 {
-                    this.deck.push({type: CardType.Industry, indexes: gameConfig.industryCards[i].industries, isWild: false})
+                    console.log("Pushed");
+                    this.deck.push({type: CardType.Industry, indexes: gameConfig.industryCards[i].industries, isWild: false});
                 }
             }
         }
