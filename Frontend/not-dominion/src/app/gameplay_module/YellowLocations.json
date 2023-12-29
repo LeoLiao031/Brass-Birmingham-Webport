@@ -1,0 +1,238 @@
+[
+    {
+        "location":
+        {
+            "name": "Shrewsbury",
+            "linkPoints": 2,
+            "rewardType": 2,
+            "rewardValue": 4,
+            "mechantTilesCount": 1
+        },
+        "connections":
+        [
+            {
+                "connectionType": 2,
+                "locationName": "Coalbrookdale"
+            }
+        ]
+    },
+    {
+        "location":
+        {
+            "name": "Gloucester",
+            "linkPoints": 2,
+            "rewardType": 0,
+            "rewardValue": 1,
+            "mechantTilesCount": 2
+        },
+        "connections":
+        [
+            {
+                "connectionType": 2,
+                "locationName": "Worcester"
+            },
+            {
+                "connectionType": 2,
+                "locationName": "Redditch"
+            }
+        ]
+    },
+    {
+        "location":
+        {
+            "name": "Coalbrookdale",
+            "tiles":
+            [
+                {
+                    "allowedIndustries":
+                    [
+                        2, 4
+                    ]
+                },
+                {
+                    "allowedIndustries":
+                    [
+                        2
+                    ]
+                },
+                {
+                    "allowedIndustries":
+                    [
+                        1
+                    ]
+                }
+            ]
+        },
+        "connections":
+        [
+            {
+                "connectionType": 2,
+                "locationName": "Shrewsbury"
+            },
+            {
+                "connectionType": 2,
+                "locationName": "Wolverhampton"
+            },
+            {
+                "connectionType": 2,
+                "locationName": "Kidderminster"
+            }
+        ]
+    },
+    {
+        "location":
+        {
+            "name": "Wolverhampton",
+            "tiles":
+            [
+                {
+                    "allowedIndustries":
+                    [
+                        3
+                    ]
+                },
+                {
+                    "allowedIndustries":
+                    [
+                        3, 1
+                    ]
+                }
+            ]
+        },
+        "connections":
+        [
+            {
+                "connectionType": 2,
+                "locationName": "Cannock"
+            },
+            {
+                "connectionType": 2,
+                "locationName": "Coalbrookdale"
+            },
+            {
+                "connectionType": 2,
+                "locationName": "Walsall"
+            },
+            {
+                "connectionType": 2,
+                "locationName": "Dudley"
+            }
+        ]
+    },
+    {
+        "location":
+        {
+            "name": "Dudley",
+            "tiles":
+            [
+                {
+                    "allowedIndustries":
+                    [
+                        1
+                    ]
+                },
+                {
+                    "allowedIndustries":
+                    [
+                        2
+                    ]
+                }
+            ]
+        },
+        "connections":
+        [
+            {
+                "connectionType": 2,
+                "locationName": "Wolverhampton"
+            },
+            {
+                "connectionType": 2,
+                "locationName": "Birmingham"
+            },
+            {
+                "connectionType": 2,
+                "locationName": "Kidderminster"
+            }
+        ]
+    },
+    {
+        "location":
+        {
+            "name": "Kidderminster",
+            "tiles":
+            [
+                {
+                    "allowedIndustries":
+                    [
+                        0, 1
+                    ]
+                },
+                {
+                    "allowedIndustries":
+                    [
+                        0
+                    ]
+                }
+            ]
+        },
+        "connections":
+        [
+            {
+                "connectionType": 2,
+                "locationName": "Coalbrookdale"
+            },
+            {
+                "connectionType": 2,
+                "locationName": "Dudley"
+            },
+            {
+                "connectionType": 2,
+                "locationName": ""
+            },
+            {
+                "connectionType": 2,
+                "locationName": "Worcester"
+            }
+        ]
+    },
+    {
+        "location":
+        {
+            "name": "Worcester",
+            "tiles":
+            [
+                {
+                    "allowedIndustries":
+                    [
+                        0
+                    ]
+                },
+                {
+                    "allowedIndustries":
+                    [
+                        0
+                    ]
+                }
+            ]
+        },
+        "connections":
+        [
+            {
+                "connectionType": 2,
+                "locationName": "Birmingham"
+            },
+            {
+                "connectionType": 2,
+                "locationName": "Kidderminster"
+            },
+            {
+                "connectionType": 2,
+                "locationName": ""
+            },
+            {
+                "connectionType": 2,
+                "locationName": "Gloucester"
+            }
+        ]
+    }
+]
