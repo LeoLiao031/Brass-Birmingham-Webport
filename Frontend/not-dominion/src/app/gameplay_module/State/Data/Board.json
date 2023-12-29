@@ -533,6 +533,12 @@
                       1
                   ]
               }
+          ],
+          "cardCountForPlayerCounts":
+          [
+            3,
+            3,
+            3
           ]
       },
       "connections":
@@ -569,6 +575,12 @@
                       3, 1
                   ]
               }
+          ],
+          "cardCountForPlayerCounts":
+          [
+            2,
+            2,
+            2
           ]
       },
       "connections":
@@ -609,6 +621,12 @@
                       2
                   ]
               }
+          ],
+          "cardCountForPlayerCounts":
+          [
+            2,
+            2,
+            2
           ]
       },
       "connections":
@@ -645,6 +663,12 @@
                       0
                   ]
               }
+          ],
+          "cardCountForPlayerCounts":
+          [
+            2,
+            2,
+            2
           ]
       },
       "connections":
@@ -685,6 +709,12 @@
                       0
                   ]
               }
+          ],
+          "cardCountForPlayerCounts":
+          [
+            2,
+            2,
+            2
           ]
       },
       "connections":
