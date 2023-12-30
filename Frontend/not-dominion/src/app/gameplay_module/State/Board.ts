@@ -55,7 +55,7 @@ enum ConnectionType
     Both
 }
 
-class Mine extends Location
+export class Mine extends Location
 {
     linkPoints : number;
     rewardType : MineRewardType;
@@ -76,84 +76,146 @@ class Mine extends Location
     }
 }
 
-type IndexConnection = 
+enum LocationType
 {
-    connectionType : ConnectionType;
+    Town,
+    Mine,
+    Link
+}
+
+type Connection = 
+{
+    locationType : LocationType;
     index : number;
 }
 
-type LocationAndConnections =
+export class Link extends Location
 {
-    location : Town | Mine;
-    connectionIndexes : IndexConnection[];
+    connectionType : ConnectionType;
+    connectionA : Connection;
+    connectionB : Connection;
+
+    GetConnectionFromIndex(index : number) : Connection | undefined
+    {
+        if (this.connectionA.index == index)
+        {
+            return this.connectionB;
+        }
+        else if (this.connectionB.index == index)
+        {
+            return this.connectionA;
+        }
+
+        return undefined;
+    }
+
+    constructor(name : string,
+                connectionType : ConnectionType,
+                connectionA : Connection,
+                connectionB : Connection)
+    {
+        super(name);
+        this.connectionType = connectionType;
+        this.connectionA = connectionA;
+        this.connectionB = connectionB;
+    }
+
 }
 
-export type LocationInit = 
+export type LinkInit = 
 {
-    location : Mine | Town;
-    connections : 
-    { 
-        connectionType : ConnectionType;
-        locationName : string;
-    }[] 
+    name : string;
+    connectionType : ConnectionType;
+    connectionNameA : string;
+    connectionNameB : string;
 }
 
 export class Board 
 {
-    locationAndConnections : LocationAndConnections[];
-    mineIndexes : number[];
-
-    GetAsTown(index : number) : Town | undefined
-    {
-        if ("tiles" in this.locationAndConnections[index].location)
-        {
-            return this.locationAndConnections[index].location as Town
-        }
-        
-        return undefined;
-    }
-
-    GetAsMine(index : number) : Mine | undefined
-    {
-        if ("linkPoints" in this.locationAndConnections[index].location)
-        {
-            return this.locationAndConnections[index].location as Mine
-        }
-        
-        return undefined;
-    }
+    towns : { location : Town, connections: number[] }[];
+    mines : { location : Mine, connections: number[] }[];
+    links : { location : Link, connections: number[] }[];
     
-    constructor(boardInit : LocationInit[]) 
+    constructor(towns : Town[],
+                mines : Mine[],
+                linkInits : LinkInit[]) 
     {
-        this.locationAndConnections = [];
-        this.mineIndexes = [];
+        // Initialize towns, mines, and links without any connections
+        this.towns = towns.map(town => ({ location: town, connections : <number[]>[]}));
+        this.mines = mines.map(mine => ({ location: mine, connections : <number[]>[]}));
+        // Initialize empty links
+        let tempLinks : Location[] = linkInits.map(linkInit => new Location(linkInit.name));
+        this.links = tempLinks.map(tempLink => ({location: tempLink as Link, connections: <number[]>[]}));
 
-        let nameArray : string[] = boardInit.map(
-            locationAndConnections => locationAndConnections.location.name);
-
-        for (let i : number = 0; i < boardInit.length; i++) 
+        // Loop through linkInits and find the indexes and arrays that are referenced with strings
+        for (let linkIndex : number = 0; linkIndex < linkInits.length; linkIndex++)
         {
-            // Checking if it's a mine. Can't find a cleaner way to do this :(
-            if ("linkPoints" in boardInit[i].location)
-            {
-                this.mineIndexes.push(i);
-            }
+            let connections : {connectionA : Connection, connectionB : Connection} | undefined 
+                = this.InitializeLinkForLocations(
+                [
+                    {locations: towns, locationType: LocationType.Town},
+                    {locations: mines, locationType: LocationType.Mine},
+                    {locations: tempLinks, locationType: LocationType.Link}
+                ],
+                linkInits[linkIndex]
+            );
 
-            let connectionIndexes : IndexConnection[] = [];
-            for (let j : number = 0; j < boardInit[i].connections.length; j++) 
+            if (connections == undefined)
             {
-                let connectionIndex : number = nameArray.indexOf(boardInit[i].connections[j].locationName);
-                if (connectionIndex == -1)
+                continue;
+            }
+            
+            // Create the link object and create the connection in the other array(s)
+            let newLink : Link = new Link(linkInits[linkIndex].name, linkInits[linkIndex].connectionType, connections.connectionA, connections.connectionB);
+            this.links[linkIndex] = {location : newLink, connections : <number[]>[]};
+            this.PushNewConnection(connections.connectionA, linkIndex);
+            this.PushNewConnection(connections.connectionB, linkIndex);
+        }
+    }
+
+    private InitializeLinkForLocations(locationArrays : {locations : Location[], locationType : LocationType}[], linkInit : LinkInit) : 
+        {connectionA : Connection, connectionB : Connection} | undefined
+    {
+        let connectionA : Connection | undefined = undefined;
+        let connectionB : Connection | undefined = undefined;
+
+        for (let i : number = 0; i < locationArrays.length; i++)
+        {
+            let locationArray : Location[] = locationArrays[i].locations;
+
+            for (let locationIndex : number = 0; locationIndex < locationArray.length; locationIndex++)
+            {
+                if (linkInit.connectionNameA == locationArray[locationIndex].name)
                 {
-                    console.log("Error: " + boardInit[i].connections[j].locationName + 
-                    " does not exist. It was entered as a connection to " + boardInit[i].location.name)
+                    connectionA = { locationType : locationArrays[i].locationType, index : locationIndex };
                 }
-                connectionIndexes.push({
-                    connectionType: boardInit[i].connections[j].connectionType,
-                    index: connectionIndex});
-            }
+                else if (linkInit.connectionNameB == locationArray[locationIndex].name)
+                {
+                    connectionB = { locationType : locationArrays[i].locationType, index : locationIndex };
+                }
 
-            this.locationAndConnections.push({ location: boardInit[i].location, connectionIndexes: connectionIndexes});
+                if (connectionA != null && connectionB != null)
+                {
+                    return {connectionA: connectionA, connectionB : connectionB};
+                }
+            }
+        }
+
+        return undefined;
+    }
+
+    private PushNewConnection(connection : Connection, index : number)
+    {
+        switch (connection.locationType) {
+            case LocationType.Town:
+                this.towns[connection.index].connections.push(index);
+                break;
+            case LocationType.Mine:
+                this.mines[connection.index].connections.push(index);
+                break;
+            case LocationType.Link:
+                this.towns[connection.index].connections.push(index);
+                break;
         }
     }
 }

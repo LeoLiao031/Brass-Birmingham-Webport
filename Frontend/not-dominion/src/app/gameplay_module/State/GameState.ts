@@ -91,16 +91,12 @@ class TileOnBoard
 
 class Link
 {
-    locationIndexA : number;
-    locationIndexB : number;
+    index : number;
     ownerID : number;
 
-    constructor(locationIndexA : number,
-            locationIndexB : number,
-            ownerID : number)
+    constructor(index : number, ownerID : number)
     {
-        this.locationIndexA = locationIndexA;
-        this.locationIndexB = locationIndexB;
+        this.index = index;
         this.ownerID = ownerID;
     }
 }
@@ -132,7 +128,7 @@ export class PublicState
                 ironMarketCount : number)
     {
         this.tilesOnBoard = [];
-        this.isBeerOnMerchantTiles = Array(gameConfig.board.mineIndexes.length).fill(true);
+        this.isBeerOnMerchantTiles = Array(gameConfig.board.mines.length).fill(true);
         this.links = [];
         
         this.numberOfCardsLeftInDeck = privateState.deck.length;
@@ -200,15 +196,14 @@ export class PrivateState
 
         let numberOfPlayersIndex : number = gameConfig.numberOfPlayers - 2;
 
-        for (let i : number = 0; i < gameConfig.board.locationAndConnections.length; i++)
+        for (let i : number = 0; i < gameConfig.board.towns.length; i++)
         {
-            let Town = gameConfig.board.GetAsTown(i);
-            if (Town != undefined && Town.cardCountForPlayerCounts.length >= (gameConfig.numberOfPlayers-1))
+            let town = gameConfig.board.towns[i];
+            if (town != undefined && town.location.cardCountForPlayerCounts.length >= (gameConfig.numberOfPlayers-1))
             {
-                let copiesOfCard = Town.cardCountForPlayerCounts[numberOfPlayersIndex];
+                let copiesOfCard = town.location.cardCountForPlayerCounts[numberOfPlayersIndex];
                 for (let j : number = 0; j < copiesOfCard; j++)
                 {
-                    console.log("Pushed");
                     this.deck.push({type: CardType.Location, indexes: [i], isWild: false});
                 }
             }
@@ -221,7 +216,6 @@ export class PrivateState
                 let copiesOfCard = gameConfig.industryCards[i].cardCountForPlayerCounts[numberOfPlayersIndex];
                 for (let j : number = 0; j < copiesOfCard; j++)
                 {
-                    console.log("Pushed");
                     this.deck.push({type: CardType.Industry, indexes: gameConfig.industryCards[i].industries, isWild: false});
                 }
             }

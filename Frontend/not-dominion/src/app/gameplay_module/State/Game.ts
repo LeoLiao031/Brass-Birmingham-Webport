@@ -3,7 +3,9 @@ import { GameConfig } from "./GameConfig"
 
 import industries from "./Data/Industries.json"
 import industryCards from "./Data/IndustryCards.json"
-import board from "./Data/Board.json"
+import towns from "./Data/Board/Towns.json"
+import mines from "./Data/Board/Mines.json"
+import linkInits from "./Data/Board/LinkInits.json"
 
 
 import initGameData from "./Data/InitGameData.json"
@@ -11,7 +13,7 @@ import initPlayerData from "./Data/InitPlayerData.json"
 
 export function StartGame()
 {
-    let gameConfig : GameConfig = new GameConfig(industries, industryCards, board, 8, 4);
+    let gameConfig : GameConfig = new GameConfig(industries, industryCards, towns, mines, linkInits, 8, 4);
 
     let privateState : PrivateState = new PrivateState(gameConfig);
 
