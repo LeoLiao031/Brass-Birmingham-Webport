@@ -14,6 +14,19 @@ class IndustrySection
     {
         this.counts = counts;
     }
+
+    GetNextSectionIndex() : number
+    {
+        for (let i : number = 0; i < this.counts.length; i++)
+        {
+            if (this.counts[i] > 0)
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
 } 
 
 class PlayerArea 

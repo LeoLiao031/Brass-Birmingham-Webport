@@ -1,6 +1,6 @@
 import { GameConfig } from "../State/GameConfig";
 import { LocalState, PublicState } from "../State/GameState";
-import { BuildInput, Input } from "./Input";
+import { BuildInput, Input, InputType } from "./Input";
 
 export interface Cost
 {
@@ -49,62 +49,56 @@ export class CardCost implements Cost
 
 export class AppropriateCardCost implements Cost
 {
-    CanPayCost (input : BuildInput, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : boolean 
+    CanPayCost (input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : boolean 
     {
-        if (!input.cardUsed)
+        if (input.inputType != InputType.Build)
         {
             return false;
         }
 
-        if (localState.hand.indexOf(input.cardUsed) == -1)
+        let buildInput : BuildInput = input as BuildInput;
+
+        // TODO Oscar: This is unfinished. There's like 10 more conditions.
+        if (buildInput.townID.locationIndex >= gameConfig.board.towns.length)
         {
             return false;
         }
 
-        if (input.townID.locationIndex >= gameConfig.board.towns.length)
-        {
-            return false;
-        }
-
-        if (input.townID.tileIndex >= gameConfig.board.towns[input.townID.locationIndex].location.tiles.length)
+        if (buildInput.townID.tileIndex >= gameConfig.board.towns[buildInput.townID.locationIndex].location.tiles.length)
         {
             return false
         }
 
-        if (gameConfig.board.towns[input.townID.tileIndex].location.tiles[input.townID.tileIndex].allowedIndustries.indexOf(input.industryIndex) == -1)
+        if (gameConfig.board.towns[buildInput.townID.tileIndex].location.tiles[buildInput.townID.tileIndex].allowedIndustries.indexOf(buildInput.industryIndex) == -1)
         {
             return false;
         }
 
-        if (!publicState.IsTileEmpty(input.townID))
+        if (!publicState.IsTileEmpty(buildInput.townID))
         {
             return false;
         }
 
-        return true;
+        return new CardCost().CanPayCost(input, localState, publicState, gameConfig);
     }
     
-    PayCost(input : BuildInput, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : void
+    PayCost(input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : void
     {
-        let index : number = localState.hand.indexOf(input.cardUsed);
-        localState.hand = localState.hand.splice(index, 1);
-        
-        publicState.publicPlayerData[input.playerID].discardPile.push(input.cardUsed);
+        new CardCost().PayCost(input, localState, publicState, gameConfig);
     }
 }
 
-export class BuildMoneyCost implements Cost
+export class MoneyCost implements Cost
 {
-    CanPayCost (input : BuildInput, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : boolean 
+    amount : number;
+    constructor(amount :number)
     {
-        const amount = this.GetAmountToPay(input, localState, publicState, gameConfig);
+        this.amount = amount;
+    }
 
-        if (amount < 0)
-        {
-            return false;
-        }
-
-        if (publicState.publicPlayerData[input.playerID].money < amount)
+    CanPayCost (input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : boolean 
+    {
+        if (publicState.publicPlayerData[input.playerID].money < this.amount)
         {
             return false;
         }
@@ -112,20 +106,43 @@ export class BuildMoneyCost implements Cost
         return true;
     };
     
-    PayCost(input : BuildInput, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : void
+    PayCost(input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : void
+    {
+        publicState.publicPlayerData[input.playerID].money -= this.amount;
+    }
+}
+
+export class BuildMoneyCost implements Cost
+{
+    CanPayCost (input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : boolean 
     {
         const amount = this.GetAmountToPay(input, localState, publicState, gameConfig);
-        publicState.publicPlayerData[input.playerID].money -= amount;
+        if (amount < 0)
+        {
+            return false;
+        }
+        return new MoneyCost(amount).CanPayCost(input, localState, publicState, gameConfig);
+    };
+    
+    PayCost(input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : void
+    {
+        const amount = this.GetAmountToPay(input, localState, publicState, gameConfig);
+        new MoneyCost(amount).PayCost(input, localState, publicState, gameConfig);
     }
 
-    GetAmountToPay(input : BuildInput, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : number
+    GetAmountToPay(input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : number
     {
-        for (let i : number = 0; i < publicState.publicPlayerData[input.playerID].playerArea.section[input.industryIndex].counts.length; i++)
+        if (input.inputType != InputType.Build)
         {
-            if (publicState.publicPlayerData[input.playerID].playerArea.section[input.industryIndex].counts[i] != 0)
-            {
-                return gameConfig.industries[input.industryIndex].industryLevels[i].moneyCost;
-            }
+            return -1;
+        }
+
+        let buildInput : BuildInput = input as BuildInput;
+
+        let nextSectionIndex : number = publicState.publicPlayerData[input.playerID].playerArea.section[buildInput.industryIndex].GetNextSectionIndex();
+        if (nextSectionIndex > 0)
+        {
+            return gameConfig.industries[buildInput.industryIndex].industryLevels[nextSectionIndex].moneyCost;
         }
 
         return -1;

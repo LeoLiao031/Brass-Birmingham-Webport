@@ -28,7 +28,7 @@ export class Input
         this.cardUsed = cardUsed;
         this.inputType = inputType;
         this.playerID = playerID;
-        this.costs = costs
+        this.costs = costs;
     }
 
     IsValidInput(localState: LocalState, publicState: PublicState, gameConfig: GameConfig) : boolean
