@@ -1,13 +1,17 @@
 import { GameConfig } from "./GameConfig"
 
+export type TownID = 
+{
+    locationIndex : number;
+    tileIndex : number;
+}
+
 class IndustrySection 
 {
-    industryID : number;
     counts : number[];
     
-    constructor(industryID : number, counts : number[])
+    constructor(counts : number[])
     {
-        this.industryID = industryID;
         this.counts = counts;
     }
 } 
@@ -28,7 +32,7 @@ class PlayerArea
                     gameConfig.industries[i].industryLevels[level].startingAmount);
             }
 
-            this.section.push(new IndustrySection(i, startingAmount));
+            this.section.push(new IndustrySection(startingAmount));
         }
     }
 }
@@ -57,8 +61,7 @@ export class PublicPlayerData
 
 class TileOnBoard
 {
-    townIndex : number;
-    tileIndex : number;
+    townID : TownID;
     industryIndex : number;
     industryLevel : number;
     coal : number;
@@ -67,8 +70,7 @@ class TileOnBoard
     isFlipped : boolean;
     ownerID : number;
 
-    constructor(townIndex : number,
-                tileIndex : number,
+    constructor(townID : TownID,
                 industryIndex : number,
                 industryLevel : number,
                 coal : number,
@@ -77,8 +79,7 @@ class TileOnBoard
                 isFlipped : boolean,
                 ownerID : number)
     {
-        this.townIndex = townIndex;
-        this.tileIndex = tileIndex;
+        this.townID = townID;
         this.industryIndex = industryIndex;
         this.industryLevel = industryLevel;
         this.coal = coal;
@@ -144,6 +145,26 @@ export class PublicState
         this.actionsRemainingInCurrentTurn = 2;
 
         this.isRailEra = false;
+    }
+
+    IsTileEmpty(townID : TownID) : boolean
+    {
+        for (let i : number = 0; i < this.tilesOnBoard.length; i++)
+        {
+            if (this.tilesOnBoard[i].townID.locationIndex != townID.locationIndex)
+            {
+                continue;
+            }
+
+            if (this.tilesOnBoard[i].townID.tileIndex != townID.tileIndex)
+            {
+                continue;
+            }
+
+            return false;
+        }
+
+        return true;
     }
 }
 
@@ -232,18 +253,5 @@ export class LocalState
     constructor(hand : Card[]) 
     {
         this.hand = hand;
-    }
-
-    HasCard(card : Card) : boolean
-    {
-        for (let i = 0; i < this.hand.length; i++) 
-        {
-            if (this.hand[i] == card)
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 }
