@@ -89,76 +89,54 @@ type Connection =
     index : number;
 }
 
-export class Link extends Location
+export class Link
 {
     connectionType : ConnectionType;
-    connectionA : Connection;
-    connectionB : Connection;
+    connections : Connection[];
 
-    GetConnectionFromIndex(index : number) : Connection | undefined
+    constructor(connectionType : ConnectionType,
+                connections : Connection[])
     {
-        if (this.connectionA.index == index)
-        {
-            return this.connectionB;
-        }
-        else if (this.connectionB.index == index)
-        {
-            return this.connectionA;
-        }
-
-        return undefined;
-    }
-
-    constructor(name : string,
-                connectionType : ConnectionType,
-                connectionA : Connection,
-                connectionB : Connection)
-    {
-        super(name);
         this.connectionType = connectionType;
-        this.connectionA = connectionA;
-        this.connectionB = connectionB;
+        this.connections = connections;
     }
 
 }
 
 export type LinkInit = 
 {
-    name : string;
     connectionType : ConnectionType;
-    connectionNameA : string;
-    connectionNameB : string;
+    locations : string[];
 }
 
 export class Board 
 {
     towns : { location : Town, connections: number[] }[];
     mines : { location : Mine, connections: number[] }[];
-    links : { location : Link, connections: number[] }[];
+    links : Link[];
     
     constructor(towns : Town[],
                 mines : Mine[],
                 linkInits : LinkInit[]) 
     {
-        // Initialize towns, mines, and links without any connections
+        // Initialize towns and mines without any connections
         this.towns = towns.map(town => ({ location: town, connections : <number[]>[]}));
         this.mines = mines.map(mine => ({ location: mine, connections : <number[]>[]}));
-        // Initialize empty links
-        let tempLinks : Location[] = linkInits.map(linkInit => new Location(linkInit.name));
-        this.links = tempLinks.map(tempLink => ({location: tempLink as Link, connections: <number[]>[]}));
+
+        this.links = [];
 
         // Loop through linkInits and find the indexes and arrays that are referenced with strings
         for (let linkIndex : number = 0; linkIndex < linkInits.length; linkIndex++)
         {
-            let connections : {connectionA : Connection, connectionB : Connection} | undefined 
-                = this.InitializeLinkForLocations(
-                [
-                    {locations: towns, locationType: LocationType.Town},
-                    {locations: mines, locationType: LocationType.Mine},
-                    {locations: tempLinks, locationType: LocationType.Link}
-                ],
-                linkInits[linkIndex]
-            );
+            let connections : Connection[] | undefined = 
+                this.InitializeLinkForLocations
+                (
+                    [
+                        {locations: towns, locationType: LocationType.Town},
+                        {locations: mines, locationType: LocationType.Mine},
+                    ],
+                    linkInits[linkIndex]
+                );
 
             if (connections == undefined)
             {
@@ -166,55 +144,59 @@ export class Board
             }
             
             // Create the link object and create the connection in the other array(s)
-            let newLink : Link = new Link(linkInits[linkIndex].name, linkInits[linkIndex].connectionType, connections.connectionA, connections.connectionB);
-            this.links[linkIndex] = {location : newLink, connections : <number[]>[]};
-            this.PushNewConnection(connections.connectionA, linkIndex);
-            this.PushNewConnection(connections.connectionB, linkIndex);
+            this.links.push(new Link(linkInits[linkIndex].connectionType, connections));
+
+            for (let i = 0; i < connections.length; i++) 
+            {
+                this.PushNewConnection(connections[i], linkIndex);
+            }
         }
     }
 
     private InitializeLinkForLocations(locationArrays : {locations : Location[], locationType : LocationType}[], linkInit : LinkInit) : 
-        {connectionA : Connection, connectionB : Connection} | undefined
+        Connection[] | undefined
     {
-        let connectionA : Connection | undefined = undefined;
-        let connectionB : Connection | undefined = undefined;
+        let connections : Connection[] = [];
 
-        for (let i : number = 0; i < locationArrays.length; i++)
+        LinkInitLoop:
+        for (let linkInitIndex : number = 0; linkInitIndex < linkInit.locations.length; linkInitIndex++)
         {
-            let locationArray : Location[] = locationArrays[i].locations;
-
-            for (let locationIndex : number = 0; locationIndex < locationArray.length; locationIndex++)
+            for (let locationArrayIndex : number = 0; locationArrayIndex < locationArrays.length; locationArrayIndex++)
             {
-                if (linkInit.connectionNameA == locationArray[locationIndex].name)
+                let locationArray : Location[] = locationArrays[locationArrayIndex].locations;
+    
+                for (let locationIndex : number = 0; locationIndex < locationArray.length; locationIndex++)
                 {
-                    connectionA = { locationType : locationArrays[i].locationType, index : locationIndex };
-                }
-                else if (linkInit.connectionNameB == locationArray[locationIndex].name)
-                {
-                    connectionB = { locationType : locationArrays[i].locationType, index : locationIndex };
-                }
-
-                if (connectionA != null && connectionB != null)
-                {
-                    return {connectionA: connectionA, connectionB : connectionB};
+                    if (linkInit.locations[linkInitIndex] == locationArray[locationIndex].name)
+                    {
+                        connections.push({ locationType : locationArrays[locationArrayIndex].locationType, index : locationIndex });
+                        continue LinkInitLoop;
+                    }
                 }
             }
+
+            console.log("Could not find location: " + linkInit.locations[linkInitIndex])
         }
 
-        return undefined;
+        if (connections.length < linkInit.locations.length)
+        {
+            return undefined;
+        }
+
+        return connections;
     }
 
     private PushNewConnection(connection : Connection, index : number)
     {
-        switch (connection.locationType) {
+        switch (connection.locationType) 
+        {
             case LocationType.Town:
                 this.towns[connection.index].connections.push(index);
                 break;
             case LocationType.Mine:
                 this.mines[connection.index].connections.push(index);
                 break;
-            case LocationType.Link:
-                this.towns[connection.index].connections.push(index);
+            default:
                 break;
         }
     }
