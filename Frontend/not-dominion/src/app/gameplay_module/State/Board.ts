@@ -76,14 +76,13 @@ export class Mine extends Location
     }
 }
 
-enum LocationType
+export enum LocationType
 {
     Town,
     Mine,
-    Link
 }
 
-type Connection = 
+export type Connection = 
 {
     locationType : LocationType;
     index : number;
@@ -114,6 +113,33 @@ export class Board
     towns : { location : Town, connections: number[] }[];
     mines : { location : Mine, connections: number[] }[];
     links : Link[];
+
+    AreLocationsConnected(connections : number[], locationToReach : string) : boolean
+    {
+        let traverser : Traverser = new Traverser(this, connections);
+
+        let currentLink : Link | undefined = traverser.GetNextLink();
+        while (currentLink != undefined)
+        {
+            for (let i : number = 0; i < currentLink.connections.length; i++)
+            {
+                let connection : Connection = currentLink.connections[i];
+
+                if ((connection.locationType == LocationType.Town &&
+                    this.towns[connection.index].location.name == locationToReach)
+                    ||
+                    (connection.locationType == LocationType.Mine &&
+                    this.mines[connection.index].location.name == locationToReach))
+                {
+                    return true;
+                }
+            }
+
+            currentLink = traverser.GetNextLink();
+        }
+
+        return false;
+    }
     
     constructor(towns : Town[],
                 mines : Mine[],
@@ -199,5 +225,62 @@ export class Board
             default:
                 break;
         }
+    }
+}
+
+export enum TraversalType
+{
+    BreadthFirst,
+    DepthFirst
+} 
+
+export class Traverser
+{
+    board : Board;
+    toDoList : number[];
+    alreadyDoneList : number[];
+
+    GetNextLink() : Link | undefined 
+    {
+        return undefined
+    };
+
+    constructor(board : Board, startingConnections : number[], traversalType : TraversalType = TraversalType.BreadthFirst)
+    {
+        this.board = board;
+        this.toDoList = startingConnections;
+        this.alreadyDoneList = [];
+
+        if (traversalType = TraversalType.BreadthFirst)
+        {
+            this.GetNextLink = this.BreadthFirstTraversal;
+        } else if (traversalType = TraversalType.DepthFirst) 
+        {
+            this.GetNextLink = this.DepthFirstTraversal;
+        }
+    }
+
+    BreadthFirstTraversal() : Link | undefined
+    {
+        let currentConnection = this.toDoList.shift();
+        return this.TraverseWithCurrentConnection(currentConnection);
+
+    }
+
+    DepthFirstTraversal() : Link | undefined
+    {
+        let currentConnection = this.toDoList.pop();
+        return this.TraverseWithCurrentConnection(currentConnection);
+    }
+
+    TraverseWithCurrentConnection(currentConnection: number | undefined)
+    {
+        if (currentConnection == undefined)
+        {
+            return undefined;
+        }
+        this.alreadyDoneList.push(currentConnection);
+
+        return this.board.links[currentConnection];
     }
 }

@@ -72,7 +72,7 @@ export class PublicPlayerData
     }
 }
 
-class TileOnBoard
+export class TileOnBoard
 {
     townID : TownID;
     industryIndex : number;
