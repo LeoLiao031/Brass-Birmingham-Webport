@@ -15,21 +15,22 @@ export default function VictoryPointIcon (props: IVictoryPointIconProps) {
     )
 }
 
-const hexagonSize = "24px"
+const hexagonWidth = "14px"
+const hexagonHeight = "17px"
 
 const wrappingBoxStyle = {
     backgroundImage: `url(${PointHexagon.src})`,
     backgroundRepeat: "no-repeat",
     backgroundSize: "cover",
-    height: hexagonSize,
-    width: hexagonSize,
+    height: hexagonHeight,
+    width: hexagonWidth,
     alignItems: "center",
     justifyContent: "center",
     display: "flex",
     alignContent: "center",
     position: "relative",
-    marginLeft: "4px",
-    marginBottom: "4px"
+    marginLeft: "8px",
+    marginBottom: "8px"
 }
 
 const victoryPointStyle = {
@@ -39,6 +40,6 @@ const victoryPointStyle = {
     textAlign: "center",
     position: "absolute",
     top: "50%",
-    left: "55%",
+    left: "50%",
     transform: "translate(-50%, -50%)"
 }

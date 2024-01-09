@@ -28,7 +28,7 @@ const wrappingBoxStyle = {
     display: "flex",
     alignContent: "center",
     position: "relative",
-    marginBottom: "1px"
+    marginBottom: "3px"
 }
 
 const victoryPointStyle = {
