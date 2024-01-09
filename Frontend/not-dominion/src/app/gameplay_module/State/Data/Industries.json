@@ -1,0 +1,584 @@
+[
+    {
+        "name": "Cotton",
+        "industryLevels": [
+            {
+                "moneyCost": 12,
+                "coalCost": 0,
+                "ironCost": 0,
+
+                "beerCostToFlip": 1,
+                "victoryPoints": 5,
+                "linkPoints": 1,
+                "incomeBonus": 5,
+
+                "coalGenerated": 0,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 0,
+                "beerGeneratedRail": 0,
+                
+                "isOnlyInRail": false,
+                "developable": true,
+                "startingAmount": 3
+
+            },
+            {
+                "moneyCost": 14,
+                "coalCost": 1,
+                "ironCost": 0,
+
+                "beerCostToFlip": 1,
+                "victoryPoints": 5,
+                "linkPoints": 2,
+                "incomeBonus": 4,
+                
+                "coalGenerated": 0,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 0,
+                "beerGeneratedRail": 0,
+                
+                "isOnlyInRail": false,
+                "developable": true,
+                "startingAmount": 2
+            },
+            {
+                "moneyCost": 16,
+                "coalCost": 1,
+                "ironCost": 1,
+
+                "beerCostToFlip": 1,
+                "victoryPoints": 9,
+                "linkPoints": 1,
+                "incomeBonus": 3,
+                
+                "coalGenerated": 0,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 0,
+                "beerGeneratedRail": 0,
+                
+                "isOnlyInRail": false,
+                "developable": true,
+                "startingAmount": 3
+            },
+            {
+                "moneyCost": 18,
+                "coalCost": 1,
+                "ironCost": 1,
+
+                "beerCostToFlip": 1,
+                "victoryPoints": 12,
+                "linkPoints": 1,
+                "incomeBonus": 2,
+
+                "coalGenerated": 0,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 0,
+                "beerGeneratedRail": 0,
+                
+                "isOnlyInRail": false,
+                "developable": true,
+                "startingAmount": 3
+            }
+        ]
+    },
+    {
+        "name": "Coal",
+        "industryLevels": [
+            {
+                "moneyCost": 5,
+                "coalCost": 0,
+                "ironCost": 0,
+
+                "beerCostToFlip": 0,
+                "victoryPoints": 1,
+                "linkPoints": 2,
+                "incomeBonus": 4,
+
+                "coalGenerated": 2,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 0,
+                "beerGeneratedRail": 0,
+                
+                "isOnlyInRail": false,
+                "developable": true,
+                "startingAmount": 1
+            },
+            {
+                "moneyCost": 7,
+                "coalCost": 0,
+                "ironCost": 0,
+
+                "beerCostToFlip": 0,
+                "victoryPoints": 2,
+                "linkPoints": 1,
+                "incomeBonus": 7,
+
+                "coalGenerated": 3,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 0,
+                "beerGeneratedRail": 0,
+                
+                "isOnlyInRail": false,
+                "developable": true,
+                "startingAmount": 2
+            },
+            {
+                "moneyCost": 8,
+                "coalCost": 0,
+                "ironCost": 1,
+
+                "beerCostToFlip": 0,
+                "victoryPoints": 3,
+                "linkPoints": 1,
+                "incomeBonus": 6,
+
+                "coalGenerated": 4,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 0,
+                "beerGeneratedRail": 0,
+                
+                "isOnlyInRail": false,
+                "developable": true,
+                "startingAmount": 2
+            },
+            {
+                "moneyCost": 10,
+                "coalCost": 0,
+                "ironCost": 1,
+
+                "beerCostToFlip": 0,
+                "victoryPoints": 4,
+                "linkPoints": 1,
+                "incomeBonus": 5,
+
+                "coalGenerated": 5,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 0,
+                "beerGeneratedRail": 0,
+                
+                "isOnlyInRail": false,
+                "developable": true,
+                "startingAmount": 2
+            }
+        ]
+    },
+    {
+        "name": "Iron",
+        "industryLevels": [
+            {
+                "moneyCost": 5,
+                "coalCost": 1,
+                "ironCost": 4,
+
+                "beerCostToFlip": 0,
+                "victoryPoints": 3,
+                "linkPoints": 1,
+                "incomeBonus": 3,
+
+                "coalGenerated": 0,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 0,
+                "beerGeneratedRail": 0,
+                
+                "isOnlyInRail": false,
+                "developable": true,
+                "startingAmount": 1
+            },
+            {
+                "moneyCost": 7,
+                "coalCost": 1,
+                "ironCost": 4,
+
+                "beerCostToFlip": 0,
+                "victoryPoints": 5,
+                "linkPoints": 1,
+                "incomeBonus": 3,
+
+                "coalGenerated": 0,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 0,
+                "beerGeneratedRail": 0,
+                
+                "isOnlyInRail": false,
+                "developable": true,
+                "startingAmount": 1
+            },
+            {
+                "moneyCost": 9,
+                "coalCost": 1,
+                "ironCost": 5,
+
+                "beerCostToFlip": 0,
+                "victoryPoints": 7,
+                "linkPoints": 1,
+                "incomeBonus": 2,
+
+                "coalGenerated": 0,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 0,
+                "beerGeneratedRail": 0,
+                
+                "isOnlyInRail": false,
+                "developable": true,
+                "startingAmount": 1
+            },
+            {
+                "moneyCost": 12,
+                "coalCost": 1,
+                "ironCost": 6,
+
+                "beerCostToFlip": 0,
+                "victoryPoints": 9,
+                "linkPoints": 1,
+                "incomeBonus": 1,
+
+                "coalGenerated": 0,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 0,
+                "beerGeneratedRail": 0,
+                
+                "isOnlyInRail": false,
+                "developable": true,
+                "startingAmount": 1
+            }
+        ]
+    },
+    {
+        "name": "Manufacturer",
+        "industryLevels": [
+            {
+                "moneyCost": 8,
+                "coalCost": 1,
+                "ironCost": 0,
+
+                "beerCostToFlip": 1,
+                "victoryPoints": 3,
+                "linkPoints": 2,
+                "incomeBonus": 5,
+
+                "coalGenerated": 0,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 0,
+                "beerGeneratedRail": 0,
+                
+                "isOnlyInRail": false,
+                "developable": true,
+                "startingAmount": 1
+            },
+            {
+                "moneyCost": 10,
+                "coalCost": 0,
+                "ironCost": 1,
+
+                "beerCostToFlip": 1,
+                "victoryPoints": 5,
+                "linkPoints": 1,
+                "incomeBonus": 1,
+
+                "coalGenerated": 0,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 0,
+                "beerGeneratedRail": 0,
+                
+                "isOnlyInRail": false,
+                "developable": true,
+                "startingAmount": 2
+            },
+            {
+                "moneyCost": 12,
+                "coalCost": 2,
+                "ironCost": 0,
+
+                "beerCostToFlip": 0,
+                "victoryPoints": 4,
+                "linkPoints": 0,
+                "incomeBonus": 4,
+
+                "coalGenerated": 0,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 0,
+                "beerGeneratedRail": 0,
+                
+                "isOnlyInRail": false,
+                "developable": true,
+                "startingAmount": 1
+            },
+            {
+                "moneyCost": 8,
+                "coalCost": 0,
+                "ironCost": 1,
+
+                "beerCostToFlip": 1,
+                "victoryPoints": 3,
+                "linkPoints": 1,
+                "incomeBonus": 6,
+
+                "coalGenerated": 0,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 0,
+                "beerGeneratedRail": 0,
+                
+                "isOnlyInRail": false,
+                "developable": true,
+                "startingAmount": 1
+            },
+            {
+                "moneyCost": 16,
+                "coalCost": 1,
+                "ironCost": 0,
+
+                "beerCostToFlip": 2,
+                "victoryPoints": 8,
+                "linkPoints": 2,
+                "incomeBonus": 2,
+
+                "coalGenerated": 0,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 0,
+                "beerGeneratedRail": 0,
+                
+                "isOnlyInRail": false,
+                "developable": true,
+                "startingAmount": 2
+            },
+            {
+                "moneyCost": 20,
+                "coalCost": 0,
+                "ironCost": 0,
+
+                "beerCostToFlip": 1,
+                "victoryPoints": 7,
+                "linkPoints": 1,
+                "incomeBonus": 6,
+
+                "coalGenerated": 0,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 0,
+                "beerGeneratedRail": 0,
+                
+                "isOnlyInRail": false,
+                "developable": true,
+                "startingAmount": 1
+            },
+            {
+                "moneyCost": 16,
+                "coalCost": 1,
+                "ironCost": 1,
+
+                "beerCostToFlip": 0,
+                "victoryPoints": 9,
+                "linkPoints": 0,
+                "incomeBonus": 4,
+
+                "coalGenerated": 0,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 0,
+                "beerGeneratedRail": 0,
+                
+                "isOnlyInRail": false,
+                "developable": true,
+                "startingAmount": 1
+            },
+            {
+                "moneyCost": 20,
+                "coalCost": 0,
+                "ironCost": 2,
+
+                "beerCostToFlip": 1,
+                "victoryPoints": 11,
+                "linkPoints": 1,
+                "incomeBonus": 1,
+
+                "coalGenerated": 0,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 0,
+                "beerGeneratedRail": 0,
+                
+                "isOnlyInRail": false,
+                "developable": true,
+                "startingAmount": 2
+            }
+        ]
+    },
+    {
+        "name": "Brewery",
+        "industryLevels": [
+            {
+                "moneyCost": 5,
+                "coalCost": 0,
+                "ironCost": 1,
+
+                "beerCostToFlip": 0,
+                "victoryPoints": 4,
+                "linkPoints": 2,
+                "incomeBonus": 4,
+
+                "coalGenerated": 0,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 1,
+                "beerGeneratedRail": 1,
+                
+                "isOnlyInRail": false,
+                "developable": true,
+                "startingAmount": 2
+            },
+            {
+                "moneyCost": 7,
+                "coalCost": 0,
+                "ironCost": 1,
+
+                "beerCostToFlip": 0,
+                "victoryPoints": 5,
+                "linkPoints": 2,
+                "incomeBonus": 5,
+
+                "coalGenerated": 0,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 1,
+                "beerGeneratedRail": 2,
+                
+                "isOnlyInRail": false,
+                "developable": true,
+                "startingAmount": 2
+            },
+            {
+                "moneyCost": 9,
+                "coalCost": 0,
+                "ironCost": 1,
+
+                "beerCostToFlip": 0,
+                "victoryPoints": 7,
+                "linkPoints": 2,
+                "incomeBonus": 5,
+
+                "coalGenerated": 0,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 1,
+                "beerGeneratedRail": 2,
+                
+                "isOnlyInRail": false,
+                "developable": true,
+                "startingAmount": 2
+            },
+            {
+                "moneyCost": 9,
+                "coalCost": 0,
+                "ironCost": 1,
+
+                "beerCostToFlip": 0,
+                "victoryPoints": 10,
+                "linkPoints": 2,
+                "incomeBonus": 5,
+
+                "coalGenerated": 0,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 1,
+                "beerGeneratedRail": 2,
+                
+                "isOnlyInRail": true,
+                "developable": true,
+                "startingAmount": 1
+            }
+        ]
+    },
+    {
+        "name": "Pottery",
+        "industryLevels": [
+            {
+                "moneyCost": 17,
+                "coalCost": 0,
+                "ironCost": 1,
+
+                "beerCostToFlip": 1,
+                "victoryPoints": 10,
+                "linkPoints": 1,
+                "incomeBonus": 5,
+
+                "coalGenerated": 0,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 0,
+                "beerGeneratedRail": 0,
+                
+                "isOnlyInRail": false,
+                "developable": false,
+                "startingAmount": 1
+            },
+            {
+                "moneyCost": 0,
+                "coalCost": 1,
+                "ironCost": 0,
+
+                "beerCostToFlip": 1,
+                "victoryPoints": 1,
+                "linkPoints": 1,
+                "incomeBonus": 1,
+
+                "coalGenerated": 0,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 0,
+                "beerGeneratedRail": 0,
+                
+                "isOnlyInRail": false,
+                "developable": true,
+                "startingAmount": 1
+            },
+            {
+                "moneyCost": 22,
+                "coalCost": 2,
+                "ironCost": 0,
+
+                "beerCostToFlip": 2,
+                "victoryPoints": 11,
+                "linkPoints": 1,
+                "incomeBonus": 5,
+
+                "coalGenerated": 0,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 0,
+                "beerGeneratedRail": 0,
+                
+                "isOnlyInRail": false,
+                "developable": false,
+                "startingAmount": 1
+            },
+            {
+                "moneyCost": 0,
+                "coalCost": 1,
+                "ironCost": 0,
+
+                "beerCostToFlip": 1,
+                "victoryPoints": 1,
+                "linkPoints": 1,
+                "incomeBonus": 1,
+
+                "coalGenerated": 0,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 0,
+                "beerGeneratedRail": 0,
+                
+                "isOnlyInRail": false,
+                "developable": true,
+                "startingAmount": 1
+            },
+            {
+                "moneyCost": 24,
+                "coalCost": 2,
+                "ironCost": 0,
+
+                "beerCostToFlip": 2,
+                "victoryPoints": 20,
+                "linkPoints": 1,
+                "incomeBonus": 5,
+
+                "coalGenerated": 0,
+                "ironGenerated": 0,
+                "beerGeneratedCanal": 0,
+                "beerGeneratedRail": 0,
+                
+                "isOnlyInRail": true,
+                "developable": true,
+                "startingAmount": 1
+            }
+        ]
+    }
+]

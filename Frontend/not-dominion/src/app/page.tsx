@@ -1,6 +1,9 @@
+import { StartGame } from './gameplay_module/State/Game'
 import IndustryTile from './components/IndustryTile'
 
 export default function Home() {
+  StartGame();
+
   return (
     <>
       <IndustryTile industry={'Brewery'} flipped={false} tier={1} victoryPoints={1} income={0} linkPoints={1} />

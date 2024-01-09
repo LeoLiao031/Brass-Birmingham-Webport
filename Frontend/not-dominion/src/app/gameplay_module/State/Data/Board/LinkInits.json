@@ -1,0 +1,315 @@
+[
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Warrington",
+            "Stoke-on-Trent"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Stoke-on-Trent",
+            "Leek"
+        ]
+    },
+    {
+        "connectionType": 1,
+        "locations": 
+        [
+            "Leek",
+            "Belper"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Belper",
+            "Derby"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Stone",
+            "Stoke-on-Trent"
+        ]
+    },
+    {
+        "connectionType": 1,
+        "locations": 
+        [
+            "Stone",
+            "Uttoxeter"
+        ]
+    },
+    {
+        "connectionType": 1,
+        "locations": 
+        [
+            "Uttoxeter",
+            "Derby"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Derby",
+            "Nottingham"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Stone",
+            "Stafford"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Stone",
+            "Burton-on-Trent"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Derby",
+            "Burton-on-Trent"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Stafford",
+            "Cannock"
+        ]
+    },
+    {
+        "connectionType": 1,
+        "locations": 
+        [
+            "Cannock",
+            "Burton-on-Trent"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "FarmBrewery1",
+            "Cannock"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Cannock",
+            "Wolverhampton"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Cannock",
+            "Walsall"
+        ]
+    },
+    {
+        "connectionType": 0,
+        "locations": 
+        [
+            "Walsall",
+            "Burton-on-Trent"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Burton-on-Trent",
+            "Tamworth"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Shrewsbury",
+            "Coalbrookdale"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Coalbrookdale",
+            "Wolverhampton"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Wolverhampton",
+            "Walsall"
+        ]
+    },
+    {
+        "connectionType": 1,
+        "locations": 
+        [
+            "Walsall",
+            "Tamworth"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Tamworth",
+            "Nuneaton"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Coalbrookdale",
+            "Kidderminster"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Wolverhampton",
+            "Dudley"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Walsall",
+            "Birmingham"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Tamworth",
+            "Birmingham"
+        ]
+    },
+    {
+        "connectionType": 1,
+        "locations": 
+        [
+            "Nuneaton",
+            "Birmingham"
+        ]
+    },
+    {
+        "connectionType": 1,
+        "locations": 
+        [
+            "Nuneaton",
+            "Coventry"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Dudley",
+            "Birmingham"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Birmingham",
+            "Coventry"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Dudley",
+            "Kidderminster"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Worcester",
+            "Birmingham"
+        ]
+    },
+    {
+        "connectionType": 1,
+        "locations": 
+        [
+            "Birmingham",
+            "Redditch"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Birmingham",
+            "Oxford"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "FarmBrewery2",
+            "Kidderminster",
+            "Worcester"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Worcester",
+            "Gloucester"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Gloucester",
+            "Redditch"
+        ]
+    },
+    {
+        "connectionType": 2,
+        "locations": 
+        [
+            "Redditch",
+            "Oxford"
+        ]
+    }
+]
