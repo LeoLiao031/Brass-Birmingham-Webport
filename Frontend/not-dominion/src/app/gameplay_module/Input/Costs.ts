@@ -1,4 +1,4 @@
-import { LocationType, Town, Traverser } from "../State/Board";
+import { ConnectedTraverser, LocationType, TraversalType, Traverser } from "../State/Board";
 import { GameConfig } from "../State/GameConfig";
 import { LocalState, PublicState, TileOnBoard } from "../State/GameState";
 import { BuildInput, Input, InputType } from "./Input";
@@ -165,7 +165,8 @@ export class CoalCost implements Cost
     {
         let amountRemaining : number = this.amount;
 
-        let traverser : Traverser = new Traverser(gameConfig.board, this.connections);
+        let traverser : ConnectedTraverser = new ConnectedTraverser(
+            gameConfig.board, this.connections, TraversalType.BreadthFirst, publicState);
 
         let currentLink = traverser.GetNextLink();
         while (currentLink != undefined)
@@ -202,8 +203,9 @@ export class CoalCost implements Cost
     {
         let amountRemaining : number = this.amount;
 
-        let traverser : Traverser = new Traverser(gameConfig.board, this.connections);
-
+        let traverser : ConnectedTraverser = new ConnectedTraverser(
+            gameConfig.board, this.connections, TraversalType.BreadthFirst, publicState);
+        
         let currentLink = traverser.GetNextLink();
         while (currentLink != undefined)
         {
@@ -233,5 +235,43 @@ export class CoalCost implements Cost
 
             currentLink = traverser.GetNextLink();
         }
+    }
+}
+
+export class BuildCoalCost implements Cost
+{
+    CanPayCost (input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : boolean 
+    {
+        let coalCost = this.CreateCoalCost(input, publicState, gameConfig);
+        if (coalCost == undefined)
+        {
+            return false;
+        }
+        return coalCost.CanPayCost(input, localState, publicState, gameConfig);
+    };
+    
+    PayCost(input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : void
+    {
+        let coalCost = this.CreateCoalCost(input, publicState, gameConfig);
+        if (coalCost == undefined)
+        {
+            return;
+        }
+        coalCost.PayCost(input, localState, publicState, gameConfig);
+    }
+
+    CreateCoalCost(input : Input, publicState : PublicState, gameConfig : GameConfig) : CoalCost | undefined
+    {
+        if (input.inputType != InputType.Build)
+        {
+            return undefined;
+        }
+        let buildInput : BuildInput = input as BuildInput;
+
+        let nextIndustrySection : number = publicState.publicPlayerData[input.playerID].
+            playerArea.section[buildInput.industryIndex].GetNextSectionIndex();
+        let amount : number = gameConfig.industries[buildInput.industryIndex].industryLevels[nextIndustrySection].coalCost;
+        let connections : number[] = gameConfig.board.towns[buildInput.townID.locationIndex].connections;
+        return new CoalCost(amount, connections);
     }
 }

@@ -179,6 +179,19 @@ export class PublicState
 
         return true;
     }
+
+    DoesLinkExist(index : number) : boolean
+    {
+        for (let i : number = 0; i < this.links.length; i++)
+        {
+            if (this.links[i].index == index)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
 
 export enum CardType

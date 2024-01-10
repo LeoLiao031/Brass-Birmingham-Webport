@@ -1,3 +1,5 @@
+import { PublicState } from "./GameState";
+
 class Tile 
 {
     // 0 = House
@@ -264,7 +266,6 @@ export class Traverser
     {
         let currentConnection = this.toDoList.shift();
         return this.TraverseWithCurrentConnection(currentConnection);
-
     }
 
     DepthFirstTraversal() : Link | undefined
@@ -273,13 +274,55 @@ export class Traverser
         return this.TraverseWithCurrentConnection(currentConnection);
     }
 
-    TraverseWithCurrentConnection(currentConnection: number | undefined)
+    TraverseWithCurrentConnection(currentConnection: number | undefined) : Link | undefined
     {
         if (currentConnection == undefined)
         {
             return undefined;
         }
         this.alreadyDoneList.push(currentConnection);
+
+        this.board.links[currentConnection].connections.forEach(connection => {
+            if (!this.toDoList.includes(connection.index) &&
+                !this.alreadyDoneList.includes(connection.index))
+            {
+                this.toDoList.push(connection.index);    
+            }
+        });
+
+        return this.board.links[currentConnection];
+    }
+}
+
+export class ConnectedTraverser extends Traverser
+{
+    publicState : PublicState;
+
+    constructor(board : Board, startingConnections : number[], traversalType : TraversalType = TraversalType.BreadthFirst,
+        publicState : PublicState)
+    {
+        super(board, startingConnections, traversalType);
+        this.publicState = publicState; 
+    }
+
+    override TraverseWithCurrentConnection(currentConnection: number | undefined) : Link | undefined
+    {
+        if (currentConnection == undefined)
+        {
+            return undefined;
+        }
+        this.alreadyDoneList.push(currentConnection);
+
+        this.board.links[currentConnection].connections.forEach(connection => {
+            if (!this.toDoList.includes(connection.index) &&
+                !this.alreadyDoneList.includes(connection.index))
+            {
+                if (this.publicState.DoesLinkExist(connection.index))
+                {
+                    this.toDoList.push(connection.index);
+                }
+            }
+        });
 
         return this.board.links[currentConnection];
     }
