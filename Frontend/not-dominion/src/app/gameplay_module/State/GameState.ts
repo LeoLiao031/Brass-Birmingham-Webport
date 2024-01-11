@@ -1,3 +1,5 @@
+import { Cast } from "../Utils";
+import { Town } from "./Board";
 import { GameConfig } from "./GameConfig"
 
 export type TownID = 
@@ -142,7 +144,7 @@ export class PublicState
                 ironMarketCount : number)
     {
         this.tilesOnBoard = [];
-        this.isBeerOnMerchantTiles = Array(gameConfig.board.mines.length).fill(true);
+        this.isBeerOnMerchantTiles = Array(gameConfig.board.mineIndexes.length).fill(true);
         this.links = [];
         
         this.numberOfCardsLeftInDeck = privateState.deck.length;
@@ -243,12 +245,18 @@ export class PrivateState
 
         let numberOfPlayersIndex : number = gameConfig.numberOfPlayers - 2;
 
-        for (let i : number = 0; i < gameConfig.board.towns.length; i++)
+        for (let i : number = 0; i < gameConfig.board.locations.length; i++)
         {
-            let town = gameConfig.board.towns[i];
-            if (town != undefined && town.location.cardCountForPlayerCounts.length >= (gameConfig.numberOfPlayers-1))
+            let town = Cast<Town>(gameConfig.board.locations[i]);
+            
+            if (town == undefined)
             {
-                let copiesOfCard = town.location.cardCountForPlayerCounts[numberOfPlayersIndex];
+                continue;
+            }
+
+            if (town.cardCountForPlayerCounts.length >= (gameConfig.numberOfPlayers-1))
+            {
+                let copiesOfCard = town.cardCountForPlayerCounts[numberOfPlayersIndex];
                 for (let j : number = 0; j < copiesOfCard; j++)
                 {
                     this.deck.push({type: CardType.Location, indexes: [i], isWild: false});

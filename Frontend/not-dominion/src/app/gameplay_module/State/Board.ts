@@ -1,3 +1,4 @@
+import { Cast } from "../Utils";
 import { PublicState } from "./GameState";
 
 class Tile 
@@ -16,7 +17,7 @@ class Tile
     }
 }
 
-class Location 
+export class Location 
 {
     name : string;
 
@@ -78,25 +79,13 @@ export class Mine extends Location
     }
 }
 
-export enum LocationType
-{
-    Town,
-    Mine,
-}
-
-export type Connection = 
-{
-    locationType : LocationType;
-    index : number;
-}
-
 export class Link
 {
     connectionType : ConnectionType;
-    connections : Connection[];
+    connections : number[];
 
     constructor(connectionType : ConnectionType,
-                connections : Connection[])
+                connections : number[])
     {
         this.connectionType = connectionType;
         this.connections = connections;
@@ -107,126 +96,74 @@ export class Link
 export type LinkInit = 
 {
     connectionType : ConnectionType;
-    locations : string[];
+    locationNames : string[];
 }
 
 export class Board 
 {
-    towns : { location : Town, connections: number[] }[];
-    mines : { location : Mine, connections: number[] }[];
+    locations : { location : Location, connections: number[] }[];
     links : Link[];
+    mineIndexes : number[];
 
-    AreLocationsConnected(connections : number[], locationToReach : string) : boolean
+    AreLocationsConnected(locationIndex : number, locationToReach : string) : boolean
     {
-        let traverser : Traverser = new Traverser(this, connections);
+        let traverser : Traverser = new Traverser(this, locationIndex);
 
-        let currentLink : Link | undefined = traverser.GetNextLink();
-        while (currentLink != undefined)
+        let currentLocation : number | undefined = traverser.GetNextLocationIndex();
+        while (currentLocation != undefined)
         {
-            for (let i : number = 0; i < currentLink.connections.length; i++)
+            if (this.locations[currentLocation].location.name == locationToReach)
             {
-                let connection : Connection = currentLink.connections[i];
-
-                if ((connection.locationType == LocationType.Town &&
-                    this.towns[connection.index].location.name == locationToReach)
-                    ||
-                    (connection.locationType == LocationType.Mine &&
-                    this.mines[connection.index].location.name == locationToReach))
-                {
-                    return true;
-                }
+                return true;
             }
-
-            currentLink = traverser.GetNextLink();
+            currentLocation = traverser.GetNextLocationIndex();
         }
 
         return false;
     }
     
-    constructor(towns : Town[],
-                mines : Mine[],
+    constructor(locations : Location[],
                 linkInits : LinkInit[]) 
     {
-        // Initialize towns and mines without any connections
-        this.towns = towns.map(town => ({ location: town, connections : <number[]>[]}));
-        this.mines = mines.map(mine => ({ location: mine, connections : <number[]>[]}));
-
+        this.locations = locations.map(location => ({ location: location, connections : <number[]>[]}));
         this.links = [];
+        this.mineIndexes = [];
 
-        // Loop through linkInits and find the indexes and arrays that are referenced with strings
-        for (let linkIndex : number = 0; linkIndex < linkInits.length; linkIndex++)
+        // Initialize mines
+        locations.forEach((location : Location, index : number) => 
         {
-            let connections : Connection[] | undefined = 
-                this.InitializeLinkForLocations
-                (
-                    [
-                        {locations: towns, locationType: LocationType.Town},
-                        {locations: mines, locationType: LocationType.Mine},
-                    ],
-                    linkInits[linkIndex]
-                );
-
-            if (connections == undefined)
+            if (Cast<Mine>(location) != undefined)
             {
-                continue;
+                this.mineIndexes.push(index);
             }
-            
-            // Create the link object and create the connection in the other array(s)
-            this.links.push(new Link(linkInits[linkIndex].connectionType, connections));
+        });
 
-            for (let i = 0; i < connections.length; i++) 
-            {
-                this.PushNewConnection(connections[i], linkIndex);
-            }
-        }
-    }
-
-    private InitializeLinkForLocations(locationArrays : {locations : Location[], locationType : LocationType}[], linkInit : LinkInit) : 
-        Connection[] | undefined
-    {
-        let connections : Connection[] = [];
-
-        LinkInitLoop:
-        for (let linkInitIndex : number = 0; linkInitIndex < linkInit.locations.length; linkInitIndex++)
+        // Initialize links
+        linkInits.forEach(linkInit => 
         {
-            for (let locationArrayIndex : number = 0; locationArrayIndex < locationArrays.length; locationArrayIndex++)
+            let foundConnections : number[] = [];
+
+            linkInit.locationNames.forEach(locationName => 
             {
-                let locationArray : Location[] = locationArrays[locationArrayIndex].locations;
-    
-                for (let locationIndex : number = 0; locationIndex < locationArray.length; locationIndex++)
+                for (let i = 0; i < locations.length; i++) 
                 {
-                    if (linkInit.locations[linkInitIndex] == locationArray[locationIndex].name)
+                    if (locations[i].name == locationName)
                     {
-                        connections.push({ locationType : locationArrays[locationArrayIndex].locationType, index : locationIndex });
-                        continue LinkInitLoop;
+                        foundConnections.push(i);
+                        break;
                     }
+
+                    console.log(locationName + " couldn't be found!");
                 }
-            }
+            });
 
-            console.log("Could not find location: " + linkInit.locations[linkInitIndex])
-        }
+            let newLinkIndex : number = 
+                this.links.push(new Link(linkInit.connectionType, foundConnections)) - 1;
 
-        if (connections.length < linkInit.locations.length)
-        {
-            return undefined;
-        }
-
-        return connections;
-    }
-
-    private PushNewConnection(connection : Connection, index : number)
-    {
-        switch (connection.locationType) 
-        {
-            case LocationType.Town:
-                this.towns[connection.index].connections.push(index);
-                break;
-            case LocationType.Mine:
-                this.mines[connection.index].connections.push(index);
-                break;
-            default:
-                break;
-        }
+            foundConnections.forEach(foundConnection => {
+                this.locations[foundConnection].connections.push(newLinkIndex);
+            });
+        });
     }
 }
 
@@ -242,55 +179,61 @@ export class Traverser
     toDoList : number[];
     alreadyDoneList : number[];
 
-    GetNextLink() : Link | undefined 
+    GetNextLocationIndex() : number | undefined 
     {
         return undefined
     };
 
-    constructor(board : Board, startingConnections : number[], traversalType : TraversalType = TraversalType.BreadthFirst)
+    constructor(board : Board, startingLocationIndex : number, traversalType : TraversalType = TraversalType.BreadthFirst)
     {
         this.board = board;
-        this.toDoList = startingConnections;
+        this.toDoList = [];
+        this.toDoList.push(startingLocationIndex);
         this.alreadyDoneList = [];
 
         if (traversalType = TraversalType.BreadthFirst)
         {
-            this.GetNextLink = this.BreadthFirstTraversal;
+            this.GetNextLocationIndex = this.BreadthFirstTraversal;
         } else if (traversalType = TraversalType.DepthFirst) 
         {
-            this.GetNextLink = this.DepthFirstTraversal;
+            this.GetNextLocationIndex = this.DepthFirstTraversal;
         }
     }
 
-    BreadthFirstTraversal() : Link | undefined
+    BreadthFirstTraversal() : number | undefined
     {
-        let currentConnection = this.toDoList.shift();
-        return this.TraverseWithCurrentConnection(currentConnection);
+        let currentLocation = this.toDoList.shift();
+        this.Traverse(currentLocation);
+        return currentLocation;
     }
 
-    DepthFirstTraversal() : Link | undefined
+    DepthFirstTraversal() : number | undefined
     {
-        let currentConnection = this.toDoList.pop();
-        return this.TraverseWithCurrentConnection(currentConnection);
+        let currentLocation = this.toDoList.pop();
+        this.Traverse(currentLocation);
+        return currentLocation;
     }
 
-    TraverseWithCurrentConnection(currentConnection: number | undefined) : Link | undefined
+    Traverse(locationIndex : number | undefined) : void
     {
-        if (currentConnection == undefined)
+        if (locationIndex == undefined)
         {
-            return undefined;
+            return;
         }
-        this.alreadyDoneList.push(currentConnection);
 
-        this.board.links[currentConnection].connections.forEach(connection => {
-            if (!this.toDoList.includes(connection.index) &&
-                !this.alreadyDoneList.includes(connection.index))
+        this.alreadyDoneList.push(locationIndex);
+
+        this.board.locations[locationIndex].connections.forEach(connection => 
+        {
+            this.board.links[connection].connections.forEach(link => 
             {
-                this.toDoList.push(connection.index);    
-            }
+                if (!this.toDoList.includes(link) &&
+                    !this.alreadyDoneList.includes(link))
+                {
+                    this.toDoList.push(link);    
+                }
+            });
         });
-
-        return this.board.links[currentConnection];
     }
 }
 
@@ -298,32 +241,37 @@ export class ConnectedTraverser extends Traverser
 {
     publicState : PublicState;
 
-    constructor(board : Board, startingConnections : number[], traversalType : TraversalType = TraversalType.BreadthFirst,
-        publicState : PublicState)
+    constructor(board : Board, 
+                startingLocationIndex : number, 
+                publicState : PublicState, 
+                traversalType : TraversalType = TraversalType.BreadthFirst)
     {
-        super(board, startingConnections, traversalType);
+        super(board, startingLocationIndex, traversalType);
         this.publicState = publicState; 
     }
 
-    override TraverseWithCurrentConnection(currentConnection: number | undefined) : Link | undefined
+    override Traverse(locationIndex: number | undefined) : void
     {
-        if (currentConnection == undefined)
+        if (locationIndex == undefined)
         {
-            return undefined;
+            return;
         }
-        this.alreadyDoneList.push(currentConnection);
 
-        this.board.links[currentConnection].connections.forEach(connection => {
-            if (!this.toDoList.includes(connection.index) &&
-                !this.alreadyDoneList.includes(connection.index))
+        this.alreadyDoneList.push(locationIndex);
+
+        this.board.locations[locationIndex].connections.forEach(connection => 
+        {
+            if (this.publicState.DoesLinkExist(connection))
             {
-                if (this.publicState.DoesLinkExist(connection.index))
+                this.board.links[connection].connections.forEach(link => 
                 {
-                    this.toDoList.push(connection.index);
-                }
+                    if (!this.toDoList.includes(link) &&
+                        !this.alreadyDoneList.includes(link))
+                    {
+                        this.toDoList.push(link);    
+                    }
+                });
             }
         });
-
-        return this.board.links[currentConnection];
     }
 }

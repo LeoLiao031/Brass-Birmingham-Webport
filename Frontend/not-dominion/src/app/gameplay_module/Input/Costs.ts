@@ -1,6 +1,7 @@
-import { ConnectedTraverser, LocationType, TraversalType, Traverser } from "../State/Board";
+import { ConnectedTraverser, Town, TraversalType, Traverser } from "../State/Board";
 import { GameConfig } from "../State/GameConfig";
 import { LocalState, PublicState, TileOnBoard } from "../State/GameState";
+import { Cast } from "../Utils";
 import { BuildInput, Input, InputType } from "./Input";
 
 export interface Cost
@@ -60,17 +61,24 @@ export class AppropriateCardCost implements Cost
         let buildInput : BuildInput = input as BuildInput;
 
         // TODO Oscar: This is unfinished. There's like 10 more conditions.
-        if (buildInput.townID.locationIndex >= gameConfig.board.towns.length)
+        if (buildInput.townID.locationIndex >= gameConfig.board.locations.length)
         {
             return false;
         }
 
-        if (buildInput.townID.tileIndex >= gameConfig.board.towns[buildInput.townID.locationIndex].location.tiles.length)
+        let town = Cast<Town>(gameConfig.board.locations[buildInput.townID.locationIndex]);
+
+        if (town == undefined)
+        {
+            return false;
+        }
+
+        if (buildInput.townID.tileIndex >= town.tiles.length)
         {
             return false
         }
 
-        if (gameConfig.board.towns[buildInput.townID.tileIndex].location.tiles[buildInput.townID.tileIndex].allowedIndustries.indexOf(buildInput.industryIndex) == -1)
+        if (town.tiles[buildInput.townID.tileIndex].allowedIndustries.indexOf(buildInput.industryIndex) == -1)
         {
             return false;
         }
@@ -153,12 +161,12 @@ export class BuildMoneyCost implements Cost
 export class CoalCost implements Cost
 {
     amount : number;
-    connections : number[];
+    startingLocationIndex : number;
     constructor(amount : number,
-                connections : number[])
+                startingLocationIndex : number)
     {
         this.amount = amount;
-        this.connections = connections;
+        this.startingLocationIndex = startingLocationIndex;
     }
 
     CanPayCost (input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : boolean 
@@ -166,34 +174,26 @@ export class CoalCost implements Cost
         let amountRemaining : number = this.amount;
 
         let traverser : ConnectedTraverser = new ConnectedTraverser(
-            gameConfig.board, this.connections, TraversalType.BreadthFirst, publicState);
+            gameConfig.board, this.startingLocationIndex, publicState);
 
-        let currentLink = traverser.GetNextLink();
-        while (currentLink != undefined)
+        let currentLocation = traverser.GetNextLocationIndex();
+        while (currentLocation != undefined)
         {
-            for (let i : number = 0; i < currentLink.connections.length; i++)
+            publicState.tilesOnBoard.forEach((tileOnBoard : TileOnBoard) => 
             {
-                let connection = currentLink.connections[i];
-
-                if (connection.locationType == LocationType.Town)
+                if (tileOnBoard.townID.locationIndex == currentLocation &&
+                    tileOnBoard.coal > amountRemaining)
                 {
-                    publicState.tilesOnBoard.forEach((tileOnBoard : TileOnBoard) => 
+                    amountRemaining -= tileOnBoard.coal;
+
+                    if (amountRemaining <= 0)
                     {
-                        if (tileOnBoard.townID.locationIndex == connection.index &&
-                            tileOnBoard.coal > amountRemaining)
-                        {
-                            amountRemaining -= tileOnBoard.coal;
-
-                            if (amountRemaining <= 0)
-                            {
-                                return true;
-                            }
-                        }
-                    })
+                        return true;
+                    }
                 }
-            }
+            })
 
-            currentLink = traverser.GetNextLink();
+            currentLocation = traverser.GetNextLocationIndex();
         }
 
         return false;
@@ -204,36 +204,28 @@ export class CoalCost implements Cost
         let amountRemaining : number = this.amount;
 
         let traverser : ConnectedTraverser = new ConnectedTraverser(
-            gameConfig.board, this.connections, TraversalType.BreadthFirst, publicState);
+            gameConfig.board, this.startingLocationIndex, publicState);
         
-        let currentLink = traverser.GetNextLink();
-        while (currentLink != undefined)
+        let currentLocation = traverser.GetNextLocationIndex();
+        while (currentLocation != undefined)
         {
-            for (let i : number = 0; i < currentLink.connections.length; i++)
+            publicState.tilesOnBoard.forEach((tileOnBoard : TileOnBoard) => 
             {
-                let connection = currentLink.connections[i];
-
-                if (connection.locationType == LocationType.Town)
+                if (tileOnBoard.townID.locationIndex == currentLocation &&
+                    tileOnBoard.coal > amountRemaining)
                 {
-                    publicState.tilesOnBoard.forEach((tileOnBoard : TileOnBoard) => 
+                    let amountToConsume : number = Math.min(tileOnBoard.coal, amountRemaining)
+                    amountRemaining -= amountToConsume
+                    tileOnBoard.coal -= amountToConsume;
+
+                    if (amountRemaining <= 0)
                     {
-                        if (tileOnBoard.townID.locationIndex == connection.index &&
-                            tileOnBoard.coal > amountRemaining)
-                        {
-                            let amountToConsume : number = Math.min(tileOnBoard.coal, amountRemaining)
-                            amountRemaining -= amountToConsume
-                            tileOnBoard.coal -= amountToConsume;
-
-                            if (amountRemaining <= 0)
-                            {
-                                return;
-                            }
-                        }
-                    })
+                        return;
+                    }
                 }
-            }
+            })
 
-            currentLink = traverser.GetNextLink();
+            currentLocation = traverser.GetNextLocationIndex();
         }
     }
 }
@@ -271,7 +263,117 @@ export class BuildCoalCost implements Cost
         let nextIndustrySection : number = publicState.publicPlayerData[input.playerID].
             playerArea.section[buildInput.industryIndex].GetNextSectionIndex();
         let amount : number = gameConfig.industries[buildInput.industryIndex].industryLevels[nextIndustrySection].coalCost;
-        let connections : number[] = gameConfig.board.towns[buildInput.townID.locationIndex].connections;
-        return new CoalCost(amount, connections);
+        let location : number = buildInput.townID.locationIndex;
+        return new CoalCost(amount, location);
+    }
+}
+
+export class IronCost implements Cost
+{
+    amount : number;
+    startingLocationIndex : number;
+    constructor(amount : number,
+                startingLocationIndex : number)
+    {
+        this.amount = amount;
+        this.startingLocationIndex = startingLocationIndex;
+    }
+
+    CanPayCost (input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : boolean 
+    {
+        let amountRemaining : number = this.amount;
+
+        let traverser : Traverser = new Traverser(
+            gameConfig.board, this.startingLocationIndex);
+
+        let currentLocation = traverser.GetNextLocationIndex();
+        while (currentLocation != undefined)
+        {
+            publicState.tilesOnBoard.forEach((tileOnBoard : TileOnBoard) => 
+            {
+                if (tileOnBoard.townID.locationIndex == currentLocation &&
+                    tileOnBoard.iron > amountRemaining)
+                {
+                    amountRemaining -= tileOnBoard.iron;
+
+                    if (amountRemaining <= 0)
+                    {
+                        return true;
+                    }
+                }
+            })
+
+            currentLocation = traverser.GetNextLocationIndex();
+        }
+
+        return false;
+    };
+    
+    PayCost(input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : void
+    {
+        let amountRemaining : number = this.amount;
+
+        let traverser : ConnectedTraverser = new ConnectedTraverser(
+            gameConfig.board, this.startingLocationIndex, publicState);
+        
+        let currentLocation = traverser.GetNextLocationIndex();
+        while (currentLocation != undefined)
+        {
+            publicState.tilesOnBoard.forEach((tileOnBoard : TileOnBoard) => 
+            {
+                if (tileOnBoard.townID.locationIndex == currentLocation &&
+                    tileOnBoard.iron > amountRemaining)
+                {
+                    let amountToConsume : number = Math.min(tileOnBoard.iron, amountRemaining)
+                    amountRemaining -= amountToConsume
+                    tileOnBoard.iron -= amountToConsume;
+
+                    if (amountRemaining <= 0)
+                    {
+                        return;
+                    }
+                }
+            })
+
+            currentLocation = traverser.GetNextLocationIndex();
+        }
+    }
+}
+
+export class BuildIronCost implements Cost
+{
+    CanPayCost (input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : boolean 
+    {
+        let ironCost = this.CreateIronCost(input, publicState, gameConfig);
+        if (ironCost == undefined)
+        {
+            return false;
+        }
+        return ironCost.CanPayCost(input, localState, publicState, gameConfig);
+    };
+    
+    PayCost(input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : void
+    {
+        let ironCost = this.CreateIronCost(input, publicState, gameConfig);
+        if (ironCost == undefined)
+        {
+            return;
+        }
+        ironCost.PayCost(input, localState, publicState, gameConfig);
+    }
+
+    CreateIronCost(input : Input, publicState : PublicState, gameConfig : GameConfig) : IronCost | undefined
+    {
+        if (input.inputType != InputType.Build)
+        {
+            return undefined;
+        }
+        let buildInput : BuildInput = input as BuildInput;
+
+        let nextIndustrySection : number = publicState.publicPlayerData[input.playerID].
+            playerArea.section[buildInput.industryIndex].GetNextSectionIndex();
+        let amount : number = gameConfig.industries[buildInput.industryIndex].industryLevels[nextIndustrySection].ironCost;
+        let location : number = buildInput.townID.locationIndex;
+        return new IronCost(amount, location);
     }
 }

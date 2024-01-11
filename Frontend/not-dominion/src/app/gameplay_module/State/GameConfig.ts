@@ -1,5 +1,6 @@
 import { Industry } from "./Industry";
-import { Board, Town, Mine, LinkInit } from "./Board"
+import { Board, Location, LinkInit, Mine } from "./Board"
+import { Cast } from "../Utils";
 
 export type IndustryCard =
 {
@@ -21,8 +22,7 @@ export class GameConfig
 
     constructor(industries : Industry[],
                 industryCards : IndustryCard[],
-                towns : Town[],
-                mines : Mine[],
+                locations : Location[],
                 links : LinkInit[],
                 cardsInEachHand : number,
                 numberOfPlayers : number)
@@ -30,25 +30,28 @@ export class GameConfig
         this.industries = industries;
         this.industryCards = industryCards;
 
-        this.board = new Board(towns, mines, links);
+        this.board = new Board(locations, links);
 
         this.merchantTiles = [];
 
         this.cardsInEachHand = cardsInEachHand;
         this.numberOfPlayers = numberOfPlayers;
 
-        for (let i : number = 0; i < this.board.mines.length; i++)
-        {
-            let mine = this.board.mines[i];
+        this.board.mineIndexes.forEach(mineIndex => {
+            let mine = Cast<Mine>(this.board.locations[mineIndex]);
 
-            const max = this.industries.length - 1;
-            const min = -1;
-
-            for (let i : number = 0; i < mine.location.merchantTilesCount; i++)
+            if (mine != undefined)
             {
-                let randomIndex : number = Math.floor(Math.random() * (max - min + 1)) + min;
-                this.merchantTiles.push(randomIndex);
+                const max = this.industries.length - 1;
+                const min = -1;
+    
+                for (let i : number = 0; i < mine.merchantTilesCount; i++)
+                {
+                    let randomIndex : number = Math.floor(Math.random() * (max - min + 1)) + min;
+                    this.merchantTiles.push(randomIndex);
+                }   
             }
-        }
+        });
+
     }
 }
