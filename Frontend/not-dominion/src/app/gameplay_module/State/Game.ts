@@ -7,7 +7,6 @@ import towns from "./Data/Board/Towns.json"
 import mines from "./Data/Board/Mines.json"
 import linkInits from "./Data/Board/LinkInits.json"
 
-
 import initGameData from "./Data/InitGameData.json"
 import initPlayerData from "./Data/InitPlayerData.json"
 

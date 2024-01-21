@@ -1,3 +1,6 @@
+/*
+Represents the stats of a level of an industry
+*/
 class IndustryLevel
 {
     moneyCost: number; 

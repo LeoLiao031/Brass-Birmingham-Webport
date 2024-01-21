@@ -1,7 +1,7 @@
 [
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Warrington",
             "Stoke-on-Trent"
@@ -9,7 +9,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Stoke-on-Trent",
             "Leek"
@@ -17,7 +17,7 @@
     },
     {
         "connectionType": 1,
-        "locations": 
+        "locationNames": 
         [
             "Leek",
             "Belper"
@@ -25,7 +25,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Belper",
             "Derby"
@@ -33,7 +33,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Stone",
             "Stoke-on-Trent"
@@ -41,7 +41,7 @@
     },
     {
         "connectionType": 1,
-        "locations": 
+        "locationNames": 
         [
             "Stone",
             "Uttoxeter"
@@ -49,7 +49,7 @@
     },
     {
         "connectionType": 1,
-        "locations": 
+        "locationNames": 
         [
             "Uttoxeter",
             "Derby"
@@ -57,7 +57,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Derby",
             "Nottingham"
@@ -65,7 +65,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Stone",
             "Stafford"
@@ -73,7 +73,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Stone",
             "Burton-on-Trent"
@@ -81,7 +81,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Derby",
             "Burton-on-Trent"
@@ -89,7 +89,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Stafford",
             "Cannock"
@@ -97,7 +97,7 @@
     },
     {
         "connectionType": 1,
-        "locations": 
+        "locationNames": 
         [
             "Cannock",
             "Burton-on-Trent"
@@ -105,7 +105,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "FarmBrewery1",
             "Cannock"
@@ -113,7 +113,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Cannock",
             "Wolverhampton"
@@ -121,7 +121,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Cannock",
             "Walsall"
@@ -129,7 +129,7 @@
     },
     {
         "connectionType": 0,
-        "locations": 
+        "locationNames": 
         [
             "Walsall",
             "Burton-on-Trent"
@@ -137,7 +137,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Burton-on-Trent",
             "Tamworth"
@@ -145,7 +145,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Shrewsbury",
             "Coalbrookdale"
@@ -153,7 +153,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Coalbrookdale",
             "Wolverhampton"
@@ -161,7 +161,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Wolverhampton",
             "Walsall"
@@ -169,7 +169,7 @@
     },
     {
         "connectionType": 1,
-        "locations": 
+        "locationNames": 
         [
             "Walsall",
             "Tamworth"
@@ -177,7 +177,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Tamworth",
             "Nuneaton"
@@ -185,7 +185,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Coalbrookdale",
             "Kidderminster"
@@ -193,7 +193,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Wolverhampton",
             "Dudley"
@@ -201,7 +201,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Walsall",
             "Birmingham"
@@ -209,7 +209,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Tamworth",
             "Birmingham"
@@ -217,7 +217,7 @@
     },
     {
         "connectionType": 1,
-        "locations": 
+        "locationNames": 
         [
             "Nuneaton",
             "Birmingham"
@@ -225,7 +225,7 @@
     },
     {
         "connectionType": 1,
-        "locations": 
+        "locationNames": 
         [
             "Nuneaton",
             "Coventry"
@@ -233,7 +233,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Dudley",
             "Birmingham"
@@ -241,7 +241,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Birmingham",
             "Coventry"
@@ -249,7 +249,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Dudley",
             "Kidderminster"
@@ -257,7 +257,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Worcester",
             "Birmingham"
@@ -265,7 +265,7 @@
     },
     {
         "connectionType": 1,
-        "locations": 
+        "locationNames": 
         [
             "Birmingham",
             "Redditch"
@@ -273,7 +273,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Birmingham",
             "Oxford"
@@ -281,7 +281,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "FarmBrewery2",
             "Kidderminster",
@@ -290,7 +290,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Worcester",
             "Gloucester"
@@ -298,7 +298,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Gloucester",
             "Redditch"
@@ -306,7 +306,7 @@
     },
     {
         "connectionType": 2,
-        "locations": 
+        "locationNames": 
         [
             "Redditch",
             "Oxford"

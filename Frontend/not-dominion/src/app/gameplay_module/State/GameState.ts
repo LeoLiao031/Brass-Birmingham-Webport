@@ -1,11 +1,18 @@
+import { Town } from "./Board";
 import { GameConfig } from "./GameConfig"
 
+/*
+Represents the location of a tile on a location
+*/
 export type TownID = 
 {
     locationIndex : number;
     tileIndex : number;
 }
 
+/*
+Represents the amount of industry tiles in a PlayerArea of an indutry 
+*/
 class IndustrySection 
 {
     counts : number[];
@@ -29,6 +36,9 @@ class IndustrySection
     }
 } 
 
+/*
+Represents all the industry tiles in the player area
+*/
 class PlayerArea 
 {
     section : IndustrySection[] = [];
@@ -50,6 +60,9 @@ class PlayerArea
     }
 }
 
+/*
+The data about a player that's in the public state
+*/
 export class PublicPlayerData
 {
     money : number;
@@ -72,6 +85,10 @@ export class PublicPlayerData
     }
 }
 
+/*
+Represents an industry tile that has been built previously and
+is now on the board
+*/
 export class TileOnBoard
 {
     townID : TownID;
@@ -103,7 +120,10 @@ export class TileOnBoard
     }
 }
 
-class Link
+/*
+Represents a link that has been built
+*/
+export class Link
 {
     index : number;
     ownerID : number;
@@ -115,6 +135,9 @@ class Link
     }
 }
 
+/*
+The data that the server and all players will have
+*/
 export class PublicState 
 {
     tilesOnBoard : TileOnBoard[];
@@ -142,7 +165,7 @@ export class PublicState
                 ironMarketCount : number)
     {
         this.tilesOnBoard = [];
-        this.isBeerOnMerchantTiles = Array(gameConfig.board.mines.length).fill(true);
+        this.isBeerOnMerchantTiles = Array(gameConfig.board.GetMines().length).fill(true);
         this.links = [];
         
         this.numberOfCardsLeftInDeck = privateState.deck.length;
@@ -179,6 +202,19 @@ export class PublicState
 
         return true;
     }
+
+    DoesLinkExist(index : number) : boolean
+    {
+        for (let i : number = 0; i < this.links.length; i++)
+        {
+            if (this.links[i].index == index)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
 
 export enum CardType
@@ -194,6 +230,9 @@ export type Card =
     isWild : boolean;     
 }
 
+/*
+The data that only the server should have
+*/
 export class PrivateState
 {
     deck : Card[];
@@ -230,18 +269,17 @@ export class PrivateState
 
         let numberOfPlayersIndex : number = gameConfig.numberOfPlayers - 2;
 
-        for (let i : number = 0; i < gameConfig.board.towns.length; i++)
+        gameConfig.board.GetTowns().forEach((town, index) => 
         {
-            let town = gameConfig.board.towns[i];
-            if (town != undefined && town.location.cardCountForPlayerCounts.length >= (gameConfig.numberOfPlayers-1))
+            if (town.cardCountForPlayerCounts.length >= (gameConfig.numberOfPlayers-1))
             {
-                let copiesOfCard = town.location.cardCountForPlayerCounts[numberOfPlayersIndex];
+                let copiesOfCard = town.cardCountForPlayerCounts[numberOfPlayersIndex];
                 for (let j : number = 0; j < copiesOfCard; j++)
                 {
-                    this.deck.push({type: CardType.Location, indexes: [i], isWild: false});
+                    this.deck.push({type: CardType.Location, indexes: [index], isWild: false});
                 }
             }
-        }
+        });
 
         for (let i : number = 0; i < gameConfig.industryCards.length; i++)
         {
@@ -259,6 +297,9 @@ export class PrivateState
     }
 }
 
+/*
+The data that the local player and the server should have
+*/
 export class LocalState
 {
     hand : Card[];
