@@ -1,6 +1,9 @@
-import { Cast } from "../Utils";
 import { PublicState } from "./GameState";
 
+/* 
+Represents a tile in a town where a building of 
+a specified industry/industries can be built
+*/
 class Tile 
 {
     // 0 = House
@@ -17,6 +20,9 @@ class Tile
     }
 }
 
+/* 
+Represents a town or a mine 
+*/
 export class Location 
 {
     name : string;
@@ -27,10 +33,14 @@ export class Location
     }
 }
 
+/* 
+Represents a town that has tiles
+There are cards that let you build on a town
+cardCountForPlayerCounts = [<number of cards for 2 players>, <3 players>, <4>]
+*/
 export class Town extends Location
 {
     tiles : Tile[];
-    // Starting from 2 players
     cardCountForPlayerCounts : number[];
 
     constructor(name : string,
@@ -43,6 +53,9 @@ export class Town extends Location
     }
 }
 
+/*
+Once a beer on a mine is used, a type of reward is given
+*/
 enum MineRewardType 
 {
     Develop,
@@ -51,13 +64,19 @@ enum MineRewardType
     Money
 }
 
-enum ConnectionType
+/*
+Specifies the eras where a link can be built
+*/
+enum LinkType
 {
     Canal,
     Rail,
     Both
 }
 
+/*
+Represents a coal mine that grants access to the coal market
+*/
 export class Mine extends Location
 {
     linkPoints : number;
@@ -79,12 +98,15 @@ export class Mine extends Location
     }
 }
 
+/*
+Represents the a connection between multiple locations
+*/
 export class Link
 {
-    connectionType : ConnectionType;
+    connectionType : LinkType;
     connections : number[];
 
-    constructor(connectionType : ConnectionType,
+    constructor(connectionType : LinkType,
                 connections : number[])
     {
         this.connectionType = connectionType;
@@ -93,50 +115,48 @@ export class Link
 
 }
 
+/*
+Used to initialize a link
+Used to convert names (strings) to indexes (ints)
+*/
 export type LinkInit = 
 {
-    connectionType : ConnectionType;
+    connectionType : LinkType;
     locationNames : string[];
 }
 
+/*
+Has locations, links and a mineStartIndex
+The locations store the location data and an index for a link
+A links store the indexes of the connected locations
+The locations from 0 to mineStartIndex-1 are towns
+The locations from mineStartIndex to length-1 are mines
+*/
 export class Board 
 {
     locations : { location : Location, connections: number[] }[];
     links : Link[];
-    mineIndexes : number[];
-
-    AreLocationsConnected(locationIndex : number, locationToReach : string) : boolean
-    {
-        let traverser : Traverser = new Traverser(this, locationIndex);
-
-        let currentLocation : number | undefined = traverser.GetNextLocationIndex();
-        while (currentLocation != undefined)
-        {
-            if (this.locations[currentLocation].location.name == locationToReach)
-            {
-                return true;
-            }
-            currentLocation = traverser.GetNextLocationIndex();
-        }
-
-        return false;
-    }
+    mineStartIndex : number;
     
-    constructor(locations : Location[],
+    constructor(towns : Town[],
+                mines : Mine[],
                 linkInits : LinkInit[]) 
     {
-        this.locations = locations.map(location => ({ location: location, connections : <number[]>[]}));
-        this.links = [];
-        this.mineIndexes = [];
+        // Initialize locations
+        this.locations = [];
 
-        // Initialize mines
-        locations.forEach((location : Location, index : number) => 
+        towns.forEach(town => 
         {
-            if (Cast<Mine>(location) != undefined)
-            {
-                this.mineIndexes.push(index);
-            }
+            this.locations.push({ location: town, connections : <number[]>[]});
         });
+
+        mines.forEach(mine => 
+        {
+            this.locations.push({ location: mine, connections : <number[]>[]});
+        });
+        
+        this.links = [];
+        this.mineStartIndex = towns.length;
 
         // Initialize links
         linkInits.forEach(linkInit => 
@@ -145,14 +165,20 @@ export class Board
 
             linkInit.locationNames.forEach(locationName => 
             {
-                for (let i = 0; i < locations.length; i++) 
+                let found : boolean = false;
+
+                for (let i = 0; i < this.locations.length; i++) 
                 {
-                    if (locations[i].name == locationName)
+                    if (this.locations[i].location.name == locationName)
                     {
                         foundConnections.push(i);
+                        found = true;
                         break;
                     }
-
+                }
+                
+                if (!found)
+                {
                     console.log(locationName + " couldn't be found!");
                 }
             });
@@ -160,112 +186,75 @@ export class Board
             let newLinkIndex : number = 
                 this.links.push(new Link(linkInit.connectionType, foundConnections)) - 1;
 
-            foundConnections.forEach(foundConnection => {
+            foundConnections.forEach(foundConnection => 
+            {
                 this.locations[foundConnection].connections.push(newLinkIndex);
             });
         });
     }
-}
 
-export enum TraversalType
-{
-    BreadthFirst,
-    DepthFirst
-} 
+    GetTowns() : Town[]
+    {
+        let towns : Town[] = [];
+
+        for (let i : number = 0; i < this.mineStartIndex; i++)
+        {
+            towns.push(this.locations[i].location as Town);
+        }
+
+        return towns;
+    }
+
+    GetMines() : Mine[]
+    {
+        let mines : Mine[] = [];
+
+        for (let i : number = this.mineStartIndex; i < this.locations.length; i++)
+        {
+            mines.push(this.locations[i].location as Mine);
+        }
+
+        return mines;
+    }
+}
 
 export class Traverser
 {
     board : Board;
     toDoList : number[];
     alreadyDoneList : number[];
-
-    GetNextLocationIndex() : number | undefined 
-    {
-        return undefined
-    };
-
-    constructor(board : Board, startingLocationIndex : number, traversalType : TraversalType = TraversalType.BreadthFirst)
+    publicState : PublicState | undefined;
+    
+    constructor(board : Board,
+                startingLocationIndex : number,
+                publicState : PublicState | undefined = undefined)
     {
         this.board = board;
         this.toDoList = [];
         this.toDoList.push(startingLocationIndex);
         this.alreadyDoneList = [];
-
-        if (traversalType = TraversalType.BreadthFirst)
-        {
-            this.GetNextLocationIndex = this.BreadthFirstTraversal;
-        } else if (traversalType = TraversalType.DepthFirst) 
-        {
-            this.GetNextLocationIndex = this.DepthFirstTraversal;
-        }
-    }
-
-    BreadthFirstTraversal() : number | undefined
-    {
-        let currentLocation = this.toDoList.shift();
-        this.Traverse(currentLocation);
-        return currentLocation;
-    }
-
-    DepthFirstTraversal() : number | undefined
-    {
-        let currentLocation = this.toDoList.pop();
-        this.Traverse(currentLocation);
-        return currentLocation;
-    }
-
-    Traverse(locationIndex : number | undefined) : void
-    {
-        if (locationIndex == undefined)
-        {
-            return;
-        }
-
-        this.alreadyDoneList.push(locationIndex);
-
-        this.board.locations[locationIndex].connections.forEach(connection => 
-        {
-            this.board.links[connection].connections.forEach(link => 
-            {
-                if (!this.toDoList.includes(link) &&
-                    !this.alreadyDoneList.includes(link))
-                {
-                    this.toDoList.push(link);    
-                }
-            });
-        });
-    }
-}
-
-export class ConnectedTraverser extends Traverser
-{
-    publicState : PublicState;
-
-    constructor(board : Board, 
-                startingLocationIndex : number, 
-                publicState : PublicState, 
-                traversalType : TraversalType = TraversalType.BreadthFirst)
-    {
-        super(board, startingLocationIndex, traversalType);
         this.publicState = publicState; 
     }
 
-    override Traverse(locationIndex: number | undefined) : void
+    GetNextLocationIndex() : number | undefined 
     {
+        let locationIndex = this.toDoList.shift();
+
         if (locationIndex == undefined)
         {
-            return;
+            return undefined;
         }
 
         this.alreadyDoneList.push(locationIndex);
 
         this.board.locations[locationIndex].connections.forEach(connection => 
         {
-            if (this.publicState.DoesLinkExist(connection))
+            if (this.publicState == undefined ||
+                this.publicState.DoesLinkExist(connection))
             {
                 this.board.links[connection].connections.forEach(link => 
                 {
-                    if (!this.toDoList.includes(link) &&
+                    if (link != locationIndex &&
                         !this.alreadyDoneList.includes(link))
                     {
                         this.toDoList.push(link);    
@@ -273,5 +262,7 @@ export class ConnectedTraverser extends Traverser
                 });
             }
         });
-    }
+
+        return locationIndex;
+    };
 }

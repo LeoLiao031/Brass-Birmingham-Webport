@@ -1,6 +1,6 @@
 import { GameConfig } from "../State/GameConfig";
-import { Card, LocalState, PublicState, TownID } from "../State/GameState";
-import { AppropriateCardCost, Cost, BuildMoneyCost } from "./Costs";
+import { Card, Link, LocalState, PublicState, TileOnBoard, TownID } from "../State/GameState";
+import { AppropriateCardCost, Cost, MoneyCost, CoalCost, IronCost } from "./Costs";
 
 export enum InputType
 {
@@ -18,24 +18,27 @@ export class Input
     inputType : InputType;
     playerID : number;
 
-    costs : Cost[];
-
     constructor(cardUsed : Card,
                 inputType : InputType,
-                playerID : number,
-                costs : Cost[])
+                playerID : number)
     {
         this.cardUsed = cardUsed;
         this.inputType = inputType;
         this.playerID = playerID;
-        this.costs = costs;
+    }
+
+    GetCosts(localState: LocalState, publicState: PublicState, gameConfig: GameConfig) : Cost[]
+    {
+        return [];
     }
 
     IsValidInput(localState: LocalState, publicState: PublicState, gameConfig: GameConfig) : boolean
     {
-        for (let i : number = 0; i < this.costs.length; i++)
+        let costs : Cost[] = this.GetCosts(localState, publicState, gameConfig);
+
+        for (let i : number = 0; i < costs.length; i++)
         {
-            if (!this.costs[i].CanPayCost(this, localState, publicState, gameConfig))
+            if (!costs[i].CanPayCost(this, localState, publicState, gameConfig))
             {
                 return false;
             }
@@ -46,39 +49,151 @@ export class Input
 
     PayAllCosts(localState: LocalState, publicState: PublicState, gameConfig: GameConfig) : void
     {
-        for (let i : number = 0; i < this.costs.length; i++)
+        let costs : Cost[] = this.GetCosts(localState, publicState, gameConfig);
+
+        for (let i : number = 0; i < costs.length; i++)
         {
-            this.costs[i].PayCost(this, localState, publicState, gameConfig);
+            costs[i].PayCost(this, localState, publicState, gameConfig);
         }
+    }
+
+    Execute(localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : void
+    {
+        
     }
 }
 
 export class BuildInput extends Input
 {
     townID : TownID;
-
     industryIndex : number;
-
-    coalSelectionTownID : TownID;
-    ironSelectionTownID : TownID;
 
     constructor(cardUsed : Card,
                 playerID : number,
                 townID : TownID,
-                industryIndex : number,
-                coalSelectionTownID : TownID,
-                ironSelectionTownID : TownID)
+                industryIndex : number)
     {
-        let costs : Cost[] = [
-            new AppropriateCardCost(), 
-            new BuildMoneyCost() 
-        ];
-        super(cardUsed, InputType.Build, playerID, costs);
+        super(cardUsed, InputType.Build, playerID);
 
         this.townID = townID;
         this.industryIndex = industryIndex;
-        this.coalSelectionTownID = coalSelectionTownID;
-        this.ironSelectionTownID = ironSelectionTownID;
     }
 
+    GetPrice(localState: LocalState, publicState: PublicState, gameConfig: GameConfig) : number
+    {
+        let nextSectionIndex : number = 
+        publicState.publicPlayerData[this.playerID].playerArea.section[this.industryIndex].GetNextSectionIndex();
+
+        if (nextSectionIndex > 0)
+        {
+            return gameConfig.industries[this.industryIndex].industryLevels[nextSectionIndex].moneyCost;
+        }
+
+        return 0;
+    }
+
+    GetCoalCost(localState: LocalState, publicState: PublicState, gameConfig: GameConfig) : number
+    {
+        let nextIndustrySection : number = publicState.publicPlayerData[this.playerID].
+            playerArea.section[this.industryIndex].GetNextSectionIndex();
+        let amount : number = gameConfig.industries[this.industryIndex].industryLevels[nextIndustrySection].coalCost;
+        return amount;
+    }
+
+    GetIronCost(localState: LocalState, publicState: PublicState, gameConfig: GameConfig) : number
+    {
+        let nextIndustrySection : number = publicState.publicPlayerData[this.playerID].
+            playerArea.section[this.industryIndex].GetNextSectionIndex();
+        let amount : number = gameConfig.industries[this.industryIndex].industryLevels[nextIndustrySection].ironCost;
+        return amount;
+    }
+    
+    override GetCosts(localState: LocalState, publicState: PublicState, gameConfig: GameConfig): Cost[] 
+    {
+        let costs : Cost[] = 
+        [
+            new AppropriateCardCost(), 
+            new MoneyCost(this.GetPrice(localState, publicState, gameConfig)),
+            new CoalCost(this.GetCoalCost(localState, publicState, gameConfig),
+                this.townID.locationIndex),
+            new IronCost(this.GetIronCost(localState, publicState, gameConfig), 
+                this.townID.locationIndex)
+        ];
+
+        return costs;
+    }
+
+    override Execute(localState: LocalState, publicState: PublicState, gameConfig: GameConfig): void 
+    {
+        let industryLevel : number = publicState.publicPlayerData[this.playerID].playerArea.section[this.industryIndex].GetNextSectionIndex();
+
+        publicState.tilesOnBoard.push(new TileOnBoard
+        (
+            this.townID,
+            this.industryIndex, 
+            industryLevel, 
+            gameConfig.industries[this.industryIndex].industryLevels[industryLevel].coalGenerated,
+            gameConfig.industries[this.industryIndex].industryLevels[industryLevel].ironGenerated,
+            publicState.isRailEra ?
+                gameConfig.industries[this.industryIndex].industryLevels[industryLevel].beerGeneratedRail :
+                gameConfig.industries[this.industryIndex].industryLevels[industryLevel].beerGeneratedCanal,
+            false,
+            this.playerID
+        ));
+    }
+}
+
+export class NetworkInput extends Input
+{
+    linkLocation : number;
+
+    constructor(cardUsed : Card,
+                playerID : number,
+                linkLocation : number)
+    {
+        super(cardUsed, InputType.Build, playerID);
+
+        this.linkLocation = linkLocation;
+    }
+
+    override GetCosts(localState: LocalState, publicState: PublicState, gameConfig: GameConfig): Cost[] 
+    {
+        return [];    
+    }
+
+    Execute(localState: LocalState, publicState: PublicState, gameConfig: GameConfig): void 
+    {
+        publicState.links.push(new Link(this.linkLocation, this.playerID));
+    }
+}
+
+export class FlipInput extends Input
+{
+    tileLocation : TownID;
+
+    constructor(cardUsed : Card,
+                playerID : number,
+                tileLocation : TownID)
+    {
+        super(cardUsed, InputType.Build, playerID);
+
+        this.tileLocation = tileLocation;
+    }
+
+    override GetCosts(localState: LocalState, publicState: PublicState, gameConfig: GameConfig): Cost[] 
+    {
+        return [];    
+    }
+
+    Execute(localState: LocalState, publicState: PublicState, gameConfig: GameConfig): void 
+    {
+        for(let i : number = 0; i < publicState.tilesOnBoard.length; i++)
+        {
+            if (this.tileLocation = publicState.tilesOnBoard[i].townID)
+            {
+                publicState.tilesOnBoard[i].isFlipped = true;
+                break;
+            }
+        }
+    }
 }

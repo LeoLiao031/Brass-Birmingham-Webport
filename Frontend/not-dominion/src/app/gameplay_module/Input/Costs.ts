@@ -1,7 +1,6 @@
-import { ConnectedTraverser, Town, TraversalType, Traverser } from "../State/Board";
+import { Town, Traverser } from "../State/Board";
 import { GameConfig } from "../State/GameConfig";
 import { LocalState, PublicState, TileOnBoard } from "../State/GameState";
-import { Cast } from "../Utils";
 import { BuildInput, Input, InputType } from "./Input";
 
 export interface Cost
@@ -66,7 +65,12 @@ export class AppropriateCardCost implements Cost
             return false;
         }
 
-        let town = Cast<Town>(gameConfig.board.locations[buildInput.townID.locationIndex]);
+        if (buildInput.townID.locationIndex >= gameConfig.board.mineStartIndex)
+        {
+            return false;
+        }
+
+        let town = gameConfig.board.locations[buildInput.townID.locationIndex].location as Town;
 
         if (town == undefined)
         {
@@ -121,43 +125,6 @@ export class MoneyCost implements Cost
     }
 }
 
-export class BuildMoneyCost implements Cost
-{
-    CanPayCost (input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : boolean 
-    {
-        const amount = this.GetAmountToPay(input, localState, publicState, gameConfig);
-        if (amount < 0)
-        {
-            return false;
-        }
-        return new MoneyCost(amount).CanPayCost(input, localState, publicState, gameConfig);
-    };
-    
-    PayCost(input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : void
-    {
-        const amount = this.GetAmountToPay(input, localState, publicState, gameConfig);
-        new MoneyCost(amount).PayCost(input, localState, publicState, gameConfig);
-    }
-
-    GetAmountToPay(input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : number
-    {
-        if (input.inputType != InputType.Build)
-        {
-            return -1;
-        }
-
-        let buildInput : BuildInput = input as BuildInput;
-
-        let nextSectionIndex : number = publicState.publicPlayerData[input.playerID].playerArea.section[buildInput.industryIndex].GetNextSectionIndex();
-        if (nextSectionIndex > 0)
-        {
-            return gameConfig.industries[buildInput.industryIndex].industryLevels[nextSectionIndex].moneyCost;
-        }
-
-        return -1;
-    }
-}
-
 export class CoalCost implements Cost
 {
     amount : number;
@@ -173,7 +140,7 @@ export class CoalCost implements Cost
     {
         let amountRemaining : number = this.amount;
 
-        let traverser : ConnectedTraverser = new ConnectedTraverser(
+        let traverser : Traverser = new Traverser(
             gameConfig.board, this.startingLocationIndex, publicState);
 
         let currentLocation = traverser.GetNextLocationIndex();
@@ -203,7 +170,7 @@ export class CoalCost implements Cost
     {
         let amountRemaining : number = this.amount;
 
-        let traverser : ConnectedTraverser = new ConnectedTraverser(
+        let traverser : Traverser = new Traverser(
             gameConfig.board, this.startingLocationIndex, publicState);
         
         let currentLocation = traverser.GetNextLocationIndex();
@@ -227,44 +194,6 @@ export class CoalCost implements Cost
 
             currentLocation = traverser.GetNextLocationIndex();
         }
-    }
-}
-
-export class BuildCoalCost implements Cost
-{
-    CanPayCost (input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : boolean 
-    {
-        let coalCost = this.CreateCoalCost(input, publicState, gameConfig);
-        if (coalCost == undefined)
-        {
-            return false;
-        }
-        return coalCost.CanPayCost(input, localState, publicState, gameConfig);
-    };
-    
-    PayCost(input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : void
-    {
-        let coalCost = this.CreateCoalCost(input, publicState, gameConfig);
-        if (coalCost == undefined)
-        {
-            return;
-        }
-        coalCost.PayCost(input, localState, publicState, gameConfig);
-    }
-
-    CreateCoalCost(input : Input, publicState : PublicState, gameConfig : GameConfig) : CoalCost | undefined
-    {
-        if (input.inputType != InputType.Build)
-        {
-            return undefined;
-        }
-        let buildInput : BuildInput = input as BuildInput;
-
-        let nextIndustrySection : number = publicState.publicPlayerData[input.playerID].
-            playerArea.section[buildInput.industryIndex].GetNextSectionIndex();
-        let amount : number = gameConfig.industries[buildInput.industryIndex].industryLevels[nextIndustrySection].coalCost;
-        let location : number = buildInput.townID.locationIndex;
-        return new CoalCost(amount, location);
     }
 }
 
@@ -313,7 +242,7 @@ export class IronCost implements Cost
     {
         let amountRemaining : number = this.amount;
 
-        let traverser : ConnectedTraverser = new ConnectedTraverser(
+        let traverser : Traverser = new Traverser(
             gameConfig.board, this.startingLocationIndex, publicState);
         
         let currentLocation = traverser.GetNextLocationIndex();
@@ -337,43 +266,5 @@ export class IronCost implements Cost
 
             currentLocation = traverser.GetNextLocationIndex();
         }
-    }
-}
-
-export class BuildIronCost implements Cost
-{
-    CanPayCost (input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : boolean 
-    {
-        let ironCost = this.CreateIronCost(input, publicState, gameConfig);
-        if (ironCost == undefined)
-        {
-            return false;
-        }
-        return ironCost.CanPayCost(input, localState, publicState, gameConfig);
-    };
-    
-    PayCost(input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : void
-    {
-        let ironCost = this.CreateIronCost(input, publicState, gameConfig);
-        if (ironCost == undefined)
-        {
-            return;
-        }
-        ironCost.PayCost(input, localState, publicState, gameConfig);
-    }
-
-    CreateIronCost(input : Input, publicState : PublicState, gameConfig : GameConfig) : IronCost | undefined
-    {
-        if (input.inputType != InputType.Build)
-        {
-            return undefined;
-        }
-        let buildInput : BuildInput = input as BuildInput;
-
-        let nextIndustrySection : number = publicState.publicPlayerData[input.playerID].
-            playerArea.section[buildInput.industryIndex].GetNextSectionIndex();
-        let amount : number = gameConfig.industries[buildInput.industryIndex].industryLevels[nextIndustrySection].ironCost;
-        let location : number = buildInput.townID.locationIndex;
-        return new IronCost(amount, location);
     }
 }
