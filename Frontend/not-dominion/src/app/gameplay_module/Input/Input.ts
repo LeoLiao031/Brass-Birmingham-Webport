@@ -1,6 +1,6 @@
 import { GameConfig } from "../State/GameConfig";
 import { Card, Link, LocalState, PublicState, TileOnBoard, TownID } from "../State/GameState";
-import { AppropriateCardCost, Cost, MoneyCost, CoalCost, IronCost } from "./Costs";
+import { AppropriateCardCost, Cost, MoneyCost, CoalCost, IronCost, ResponseType } from "./Costs";
 
 export enum InputType
 {
@@ -35,13 +35,25 @@ export class Input
     IsValidInput(localState: LocalState, publicState: PublicState, gameConfig: GameConfig) : boolean
     {
         let costs : Cost[] = this.GetCosts(localState, publicState, gameConfig);
+        let moneyCost : number = 0; 
 
         for (let i : number = 0; i < costs.length; i++)
         {
-            if (!costs[i].CanPayCost(this, localState, publicState, gameConfig))
+            let response = costs[i].CanPayCost(this, localState, publicState, gameConfig);
+
+            if (response.responseType == ResponseType.Failure)
             {
                 return false;
             }
+            else if (response.responseType == ResponseType.Conditional)
+            {
+                moneyCost += response.additionalMoneyRequired;
+            }
+        }
+
+        if (publicState.publicPlayerData[this.playerID].money < moneyCost)
+        {
+            return false;
         }
 
         return true;
@@ -123,9 +135,20 @@ export class BuildInput extends Input
         return costs;
     }
 
+    override IsValidInput(localState: LocalState, publicState: PublicState, gameConfig: GameConfig): boolean 
+    {
+        if (publicState.publicPlayerData[this.playerID].playerArea.section[this.industryIndex].GetNextSectionIndex() == -1)
+        {
+            return false;
+        }
+        
+        return super.IsValidInput(localState, publicState, gameConfig);
+    }
+
     override Execute(localState: LocalState, publicState: PublicState, gameConfig: GameConfig): void 
     {
         let industryLevel : number = publicState.publicPlayerData[this.playerID].playerArea.section[this.industryIndex].GetNextSectionIndex();
+        publicState.publicPlayerData[this.playerID].playerArea.section[this.industryIndex].counts[industryLevel]--;
 
         publicState.tilesOnBoard.push(new TileOnBoard
         (
