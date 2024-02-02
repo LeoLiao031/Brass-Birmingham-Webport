@@ -1,4 +1,3 @@
-import { Town } from "./Board";
 import { GameConfig } from "./GameConfig"
 
 /*

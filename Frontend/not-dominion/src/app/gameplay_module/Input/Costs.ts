@@ -178,6 +178,11 @@ export class CoalCost implements Cost
             currentLocation = traverser.GetNextLocationIndex();
         }
 
+        if (!gameConfig.board.IsLocationConnectedToAMine(this.startingLocationIndex, publicState))
+        {
+            return new CostResponse(ResponseType.Failure);
+        }
+
         if (amountRemaining > publicState.coalMarketCount)
         {
             return new CostResponse(ResponseType.Failure);

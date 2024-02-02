@@ -216,6 +216,40 @@ export class Board
 
         return mines;
     }
+
+    AreLocationsConnected(locationIndex : number, locationToReach : string, publicState : PublicState) : boolean
+    {
+        let traverser : Traverser = new Traverser(this, locationIndex, publicState);
+
+        let currentLocation : number | undefined = traverser.GetNextLocationIndex();
+        while (currentLocation != undefined)
+        {
+            if (this.locations[currentLocation].location.name == locationToReach)
+            {
+                return true;
+            }
+            currentLocation = traverser.GetNextLocationIndex();
+        }
+
+        return false;
+    }
+
+    IsLocationConnectedToAMine(locationIndex : number, publicState : PublicState)
+    {
+        let traverser : Traverser = new Traverser(this, locationIndex, publicState);
+
+        let currentLocation : number | undefined = traverser.GetNextLocationIndex();
+        while (currentLocation != undefined)
+        {
+            if (currentLocation >= this.mineStartIndex)
+            {
+                return true;
+            }
+            currentLocation = traverser.GetNextLocationIndex();
+        }
+
+        return false;
+    }
 }
 
 export class Traverser

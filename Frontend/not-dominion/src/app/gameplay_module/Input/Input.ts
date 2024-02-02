@@ -27,9 +27,16 @@ export class Input
         this.playerID = playerID;
     }
 
+    // Override this to add costs
     GetCosts(localState: LocalState, publicState: PublicState, gameConfig: GameConfig) : Cost[]
     {
         return [];
+    }
+
+    // Override this to add costs that are payed in Execute()
+    ExtraCheck(localState: LocalState, publicState: PublicState, gameConfig: GameConfig) : boolean
+    {
+        return true;
     }
 
     IsValidInput(localState: LocalState, publicState: PublicState, gameConfig: GameConfig) : boolean
@@ -56,7 +63,7 @@ export class Input
             return false;
         }
 
-        return true;
+        return this.ExtraCheck(localState, publicState, gameConfig);
     }
 
     PayAllCosts(localState: LocalState, publicState: PublicState, gameConfig: GameConfig) : void
@@ -69,9 +76,17 @@ export class Input
         }
     }
 
-    Execute(localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : void
+    // Override this to implement execution
+    Execute(localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : boolean
     {
-        
+        if (!this.IsValidInput)
+        {
+            return false;
+        }
+
+        this.PayAllCosts(localState, publicState, gameConfig);
+
+        return true;
     }
 }
 
@@ -135,18 +150,23 @@ export class BuildInput extends Input
         return costs;
     }
 
-    override IsValidInput(localState: LocalState, publicState: PublicState, gameConfig: GameConfig): boolean 
+    override ExtraCheck(localState: LocalState, publicState: PublicState, gameConfig: GameConfig): boolean 
     {
         if (publicState.publicPlayerData[this.playerID].playerArea.section[this.industryIndex].GetNextSectionIndex() == -1)
         {
             return false;
         }
         
-        return super.IsValidInput(localState, publicState, gameConfig);
+        return true;
     }
 
-    override Execute(localState: LocalState, publicState: PublicState, gameConfig: GameConfig): void 
+    override Execute(localState: LocalState, publicState: PublicState, gameConfig: GameConfig) : boolean 
     {
+        if (!super.Execute(localState, publicState, gameConfig))
+        {
+            return false;
+        }
+
         let industryLevel : number = publicState.publicPlayerData[this.playerID].playerArea.section[this.industryIndex].GetNextSectionIndex();
         publicState.publicPlayerData[this.playerID].playerArea.section[this.industryIndex].counts[industryLevel]--;
 
@@ -163,6 +183,8 @@ export class BuildInput extends Input
             false,
             this.playerID
         ));
+
+        return true;
     }
 }
 
@@ -184,9 +206,15 @@ export class NetworkInput extends Input
         return [];    
     }
 
-    Execute(localState: LocalState, publicState: PublicState, gameConfig: GameConfig): void 
+    Execute(localState: LocalState, publicState: PublicState, gameConfig: GameConfig): boolean 
     {
+        if (!super.Execute(localState, publicState, gameConfig))
+        {
+            return false;
+        }
+
         publicState.links.push(new Link(this.linkLocation, this.playerID));
+        return true;
     }
 }
 
@@ -208,8 +236,13 @@ export class FlipInput extends Input
         return [];    
     }
 
-    Execute(localState: LocalState, publicState: PublicState, gameConfig: GameConfig): void 
+    Execute(localState: LocalState, publicState: PublicState, gameConfig: GameConfig): boolean 
     {
+        if (!super.Execute(localState, publicState, gameConfig))
+        {
+            return false;
+        }
+
         for(let i : number = 0; i < publicState.tilesOnBoard.length; i++)
         {
             if (this.tileLocation = publicState.tilesOnBoard[i].townID)
@@ -218,5 +251,7 @@ export class FlipInput extends Input
                 break;
             }
         }
+
+        return true;
     }
 }
