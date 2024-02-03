@@ -143,12 +143,12 @@ export class MoneyCost implements Cost
 export class CoalCost implements Cost
 {
     amount : number;
-    startingLocationIndex : number;
+    startingLocationIndexes : number[];
     constructor(amount : number,
-                startingLocationIndex : number)
+                startingLocationIndexes : number[])
     {
         this.amount = amount;
-        this.startingLocationIndex = startingLocationIndex;
+        this.startingLocationIndexes = startingLocationIndexes;
     }
 
     CanPayCost (input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : CostResponse 
@@ -156,17 +156,17 @@ export class CoalCost implements Cost
         let amountRemaining : number = this.amount;
 
         let traverser : Traverser = new Traverser(
-            gameConfig.board, this.startingLocationIndex, publicState);
+            gameConfig.board, this.startingLocationIndexes, publicState);
 
         let currentLocation = traverser.GetNextLocationIndex();
         while (currentLocation != undefined)
         {
             publicState.tilesOnBoard.forEach((tileOnBoard : TileOnBoard) => 
             {
-                if (tileOnBoard.townID.locationIndex == currentLocation &&
-                    tileOnBoard.coal > amountRemaining)
+                if (tileOnBoard.townID.locationIndex == currentLocation)
                 {
-                    amountRemaining -= tileOnBoard.coal;
+                    let amountToTake : number = Math.min(tileOnBoard.coal, amountRemaining);
+                    amountRemaining -= amountToTake;
 
                     if (amountRemaining <= 0)
                     {
@@ -178,7 +178,7 @@ export class CoalCost implements Cost
             currentLocation = traverser.GetNextLocationIndex();
         }
 
-        if (!gameConfig.board.IsLocationConnectedToAMine(this.startingLocationIndex, publicState))
+        if (!gameConfig.board.IsLocationConnectedToAMine(this.startingLocationIndexes, publicState))
         {
             return new CostResponse(ResponseType.Failure);
         }
@@ -197,15 +197,14 @@ export class CoalCost implements Cost
         let amountRemaining : number = this.amount;
 
         let traverser : Traverser = new Traverser(
-            gameConfig.board, this.startingLocationIndex, publicState);
+            gameConfig.board, this.startingLocationIndexes, publicState);
         
         let currentLocation = traverser.GetNextLocationIndex();
         while (currentLocation != undefined)
         {
             publicState.tilesOnBoard.forEach((tileOnBoard : TileOnBoard) => 
             {
-                if (tileOnBoard.townID.locationIndex == currentLocation &&
-                    tileOnBoard.coal > amountRemaining)
+                if (tileOnBoard.townID.locationIndex == currentLocation)
                 {
                     let amountToConsume : number = Math.min(tileOnBoard.coal, amountRemaining)
                     amountRemaining -= amountToConsume
@@ -243,17 +242,17 @@ export class IronCost implements Cost
         let amountRemaining : number = this.amount;
 
         let traverser : Traverser = new Traverser(
-            gameConfig.board, this.startingLocationIndex);
+            gameConfig.board, [this.startingLocationIndex]);
 
         let currentLocation = traverser.GetNextLocationIndex();
         while (currentLocation != undefined)
         {
             publicState.tilesOnBoard.forEach((tileOnBoard : TileOnBoard) => 
             {
-                if (tileOnBoard.townID.locationIndex == currentLocation &&
-                    tileOnBoard.iron > amountRemaining)
+                if (tileOnBoard.townID.locationIndex == currentLocation)
                 {
-                    amountRemaining -= tileOnBoard.iron;
+                    let amountToTake : number = Math.min(tileOnBoard.iron, amountRemaining);
+                    amountRemaining -= amountToTake;
 
                     if (amountRemaining <= 0)
                     {
@@ -279,7 +278,7 @@ export class IronCost implements Cost
         let amountRemaining : number = this.amount;
 
         let traverser : Traverser = new Traverser(
-            gameConfig.board, this.startingLocationIndex, publicState);
+            gameConfig.board, [this.startingLocationIndex], publicState);
         
         let currentLocation = traverser.GetNextLocationIndex();
         while (currentLocation != undefined)

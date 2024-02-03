@@ -219,7 +219,7 @@ export class Board
 
     AreLocationsConnected(locationIndex : number, locationToReach : string, publicState : PublicState) : boolean
     {
-        let traverser : Traverser = new Traverser(this, locationIndex, publicState);
+        let traverser : Traverser = new Traverser(this, [locationIndex], publicState);
 
         let currentLocation : number | undefined = traverser.GetNextLocationIndex();
         while (currentLocation != undefined)
@@ -234,9 +234,9 @@ export class Board
         return false;
     }
 
-    IsLocationConnectedToAMine(locationIndex : number, publicState : PublicState)
+    IsLocationConnectedToAMine(locationIndexes : number[], publicState : PublicState)
     {
-        let traverser : Traverser = new Traverser(this, locationIndex, publicState);
+        let traverser : Traverser = new Traverser(this, locationIndexes, publicState);
 
         let currentLocation : number | undefined = traverser.GetNextLocationIndex();
         while (currentLocation != undefined)
@@ -260,12 +260,12 @@ export class Traverser
     publicState : PublicState | undefined;
     
     constructor(board : Board,
-                startingLocationIndex : number,
+                startingLocationIndexes : number[],
                 publicState : PublicState | undefined = undefined)
     {
         this.board = board;
         this.toDoList = [];
-        this.toDoList.push(startingLocationIndex);
+        this.toDoList = startingLocationIndexes;
         this.alreadyDoneList = [];
         this.publicState = publicState; 
     }
