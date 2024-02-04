@@ -21,7 +21,7 @@ class IndustrySection
         this.counts = counts;
     }
 
-    GetNextSectionIndex() : number
+    GetNextSectionIndex() : number | undefined
     {
         for (let i : number = 0; i < this.counts.length; i++)
         {
@@ -32,29 +32,6 @@ class IndustrySection
         }
 
         return -1;
-    }
-
-    GetNextTwoSectionIndexes() : number[]
-    {
-        let NextTwoSectionIndexes : number[] = [];
-
-        for (let i : number = 0; i < this.counts.length; i++)
-        {
-            if (this.counts[i] == 1 && i == this.counts.length - 1)
-            {
-                return [i, -1]
-            }
-            else if (this.counts[i] == 1)
-            {
-                return [i, i+1];
-            }
-            else if (this.counts[i] > 1)
-            {
-                return [i, i];
-            }
-        }
-
-        return [-1, -1];
     }
 } 
 

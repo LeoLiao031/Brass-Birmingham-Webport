@@ -108,10 +108,10 @@ export class BuildInput extends Input
 
     GetPrice(localState: LocalState, publicState: PublicState, gameConfig: GameConfig) : number
     {
-        let nextSectionIndex : number = 
-        publicState.publicPlayerData[this.playerID].playerArea.section[this.industryIndex].GetNextSectionIndex();
+        let nextSectionIndex = 
+            publicState.publicPlayerData[this.playerID].playerArea.section[this.industryIndex].GetNextSectionIndex();
 
-        if (nextSectionIndex > 0)
+        if (nextSectionIndex != undefined)
         {
             return gameConfig.industries[this.industryIndex].industryLevels[nextSectionIndex].moneyCost;
         }
@@ -121,16 +121,24 @@ export class BuildInput extends Input
 
     GetCoalCost(localState: LocalState, publicState: PublicState, gameConfig: GameConfig) : number
     {
-        let nextIndustrySection : number = publicState.publicPlayerData[this.playerID].
+        let nextIndustrySection = publicState.publicPlayerData[this.playerID].
             playerArea.section[this.industryIndex].GetNextSectionIndex();
+        if (nextIndustrySection == undefined)
+        {
+            return 0;
+        }
         let amount : number = gameConfig.industries[this.industryIndex].industryLevels[nextIndustrySection].coalCost;
         return amount;
     }
 
     GetIronCost(localState: LocalState, publicState: PublicState, gameConfig: GameConfig) : number
     {
-        let nextIndustrySection : number = publicState.publicPlayerData[this.playerID].
+        let nextIndustrySection = publicState.publicPlayerData[this.playerID].
             playerArea.section[this.industryIndex].GetNextSectionIndex();
+        if (nextIndustrySection == undefined)
+        {
+            return 0;
+        }
         let amount : number = gameConfig.industries[this.industryIndex].industryLevels[nextIndustrySection].ironCost;
         return amount;
     }
@@ -167,7 +175,11 @@ export class BuildInput extends Input
             return false;
         }
 
-        let industryLevel : number = publicState.publicPlayerData[this.playerID].playerArea.section[this.industryIndex].GetNextSectionIndex();
+        let industryLevel = publicState.publicPlayerData[this.playerID].playerArea.section[this.industryIndex].GetNextSectionIndex();
+        if (industryLevel == undefined)
+        {
+            return false;
+        }
         publicState.publicPlayerData[this.playerID].playerArea.section[this.industryIndex].counts[industryLevel]--;
 
         let coalGenerated : number = gameConfig.industries[this.industryIndex].industryLevels[industryLevel].coalGenerated;
@@ -325,30 +337,27 @@ export class DevelopInput extends Input
 
     override ExtraCheck(localState: LocalState, publicState: PublicState, gameConfig: GameConfig): boolean 
     {
-        if (this.amountToDevelop == 1)
+        let nextSectionIndex = 
+            publicState.publicPlayerData[this.playerID].playerArea.section[this.industry].GetNextSectionIndex();
+
+        if (nextSectionIndex == undefined)
         {
-            let nextSectionIndex : number = 
-                publicState.publicPlayerData[this.playerID].playerArea.section[this.industry].GetNextSectionIndex();
-            if (nextSectionIndex == -1)
-            {
-                return false;
-            }
-            if (!gameConfig.industries[this.industry].industryLevels[nextSectionIndex].developable)
-            {
-                return false;
-            }
+            return false;
         }
-        else 
+        if (!gameConfig.industries[this.industry].industryLevels[nextSectionIndex].developable)
         {
-            let nextTwoSectionIndexes : number[] = 
-                publicState.publicPlayerData[this.playerID].playerArea.section[this.industry].GetNextTwoSectionIndexes();
-            if (nextTwoSectionIndexes[0] == -1 || nextTwoSectionIndexes[1] == -1)
+            return false;
+        }
+
+        if (this.amountToDevelop == 2)
+        {
+            if (publicState.publicPlayerData[this.playerID].playerArea.section[this.industry].counts[nextSectionIndex] == 1 && 
+                nextSectionIndex == publicState.publicPlayerData[this.playerID].playerArea.section[this.industry].counts.length - 1)
             {
                 return false;
             }
 
-            if (!gameConfig.industries[this.industry].industryLevels[0].developable ||
-                !gameConfig.industries[this.industry].industryLevels[1].developable)
+            if (!gameConfig.industries[this.industry].industryLevels[nextSectionIndex+1].developable)
             {
                 return false;
             }
@@ -366,8 +375,12 @@ export class DevelopInput extends Input
 
         for (let i : number = 0; i < this.amountToDevelop; i++)
         {
-            let nextSectionIndex : number = 
+            let nextSectionIndex = 
                 publicState.publicPlayerData[this.playerID].playerArea.section[this.industry].GetNextSectionIndex();
+            if (nextSectionIndex == undefined)
+            {
+                return false;
+            }
             publicState.publicPlayerData[this.playerID].playerArea.section[this.industry].counts[nextSectionIndex]--;
         }
 
