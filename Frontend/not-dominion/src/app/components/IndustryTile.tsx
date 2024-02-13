@@ -6,7 +6,6 @@ import ResourceCountIcon from "./ResourceCountIcon";
 import VictoryPointIcon from "./VictoryPointIcon";
 import IncomeIcon from "./IncomeIcon";
 import LinkpointIcon from "./LinkpointIcon";
-import { link } from "fs";
 
 interface IIndustryTileProps {
     industry: string;
@@ -17,18 +16,19 @@ interface IIndustryTileProps {
     linkPoints: number;
     flipCost?: number;
     resourceCount?: number;
+    colour?: string;
 }
 
 export default function IndustryTile (props: IIndustryTileProps) {
-    const { industry, flipped, victoryPoints, income, linkPoints } = props;
+    const { industry, flipped, victoryPoints, income, linkPoints, colour } = props;
     const industryImage = images[industry as keyof typeof images];
-    const flippedIndustryImage = images["Flipped"+industry as keyof typeof images]
     const tier = numberToRoman.get(props.tier)
     const flipCost = props.flipCost || 0
     const resourceCount = props.resourceCount || 0
+    const backgroundColour = colour || "#222426"
 
     const wrappingBoxStyle = {
-        backgroundImage: !flipped ? `url(${industryImage.src})`: `url(${flippedIndustryImage.src})`,
+        backgroundImage: `url(${industryImage.src})`,
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
         height: tileSize,
@@ -36,7 +36,14 @@ export default function IndustryTile (props: IIndustryTileProps) {
         display: "flex",
         direction: "row",
         justifyContent: "space-between",
-        margin: "8px" // remove this later just here for icon demonstration purposes
+    }
+
+    const backgroundColorStyle = {
+        background: flipped ? `linear-gradient(to bottom, black 50%, ${backgroundColour} 50%)`: backgroundColour,
+        height: tileSize,
+        width: tileSize,
+        margin: "8px", // remove this later just here for icon demonstration purposes
+        perspective: "100px"
     }
 
     const rightColumnStyle = {
@@ -52,31 +59,36 @@ export default function IndustryTile (props: IIndustryTileProps) {
         <>
             {/* Case where the tile hasn't been flipped yet */}
             {!flipped && 
-                <Box sx={ wrappingBoxStyle }>
-                    <Box sx={topIconBoxStyle}>
-                        <Typography sx={ tierTextStyle }>
-                            {tier}
-                        </Typography>
-                    </Box>    
-                    <Box sx={ rightColumnStyle }>
-                        <BeerCostIcon cost={flipCost}/>
-                        {resourceCount != 0 && <ResourceCountIcon industry={industry} resourceCount={resourceCount} />}                    
+                <Box sx={backgroundColorStyle}>
+                    <Box sx={ wrappingBoxStyle }>
+                        <Box sx={topIconBoxStyle}>
+                            <Typography sx={ tierTextStyle }>
+                                {tier}
+                            </Typography>
+                        </Box>    
+                        <Box sx={ rightColumnStyle }>
+                            <BeerCostIcon cost={flipCost}/>
+                            {resourceCount != 0 && <ResourceCountIcon industry={industry} resourceCount={resourceCount} />}                    
+                        </Box>
                     </Box>
-                 </Box>}
+                </Box>}
              {/* Case where the tile has been flipped */}
-            {flipped && 
-                <Box sx={ wrappingBoxStyle}>
-                    <Box sx={flippedLeftColumnStyle}>
-                        <Typography sx={ tierTextStyle }>
-                            {tier}
-                        </Typography>
-                        <VictoryPointIcon victoryPoints={victoryPoints}/>
-                    </Box>
-                    <Box sx={flippedRightColumnStyle}>
-                        <LinkpointIcon linkpoints={linkPoints}/>
-                        <IncomeIcon income={income}/>
+            {flipped &&
+                <Box sx={backgroundColorStyle}> 
+                    <Box sx={ wrappingBoxStyle}>
+                        <Box sx={flippedLeftColumnStyle}>
+                            <Typography sx={ tierTextStyle }>
+                                {tier}
+                            </Typography>
+                            <VictoryPointIcon victoryPoints={victoryPoints}/>
+                        </Box>
+                        <Box sx={flippedRightColumnStyle}>
+                            <LinkpointIcon linkpoints={linkPoints}/>
+                            <IncomeIcon income={income}/>
+                        </Box>
                     </Box>
                 </Box>
+
             }
         </>
     )
@@ -111,4 +123,12 @@ const flippedRightColumnStyle = {
     alignItems: "flex-end",
     marginRight: "8px",
     marginTop: "4px"
+}
+
+const cardFlipStyle = {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    backfaceVisibility: "hidden",
+    webkitBackfaceVisibility: "hidden"
 }
