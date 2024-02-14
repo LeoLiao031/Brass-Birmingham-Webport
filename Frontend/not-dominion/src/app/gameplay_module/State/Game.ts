@@ -10,25 +10,31 @@ import linkInits from "./Data/Board/LinkInits.json"
 import initGameData from "./Data/InitGameData.json"
 import initPlayerData from "./Data/InitPlayerData.json"
 
-export function StartGame()
-{
-    let gameConfig : GameConfig = new GameConfig(industries, industryCards, towns, mines, linkInits, 8, 4);
+class Game {
+    gameConfig : GameConfig;
+    privateState : PrivateState;
+    localStates : LocalState[];
+    publicPlayerData : PublicPlayerData;
+    publicState : PublicState;
 
-    let privateState : PrivateState = new PrivateState(gameConfig);
-
-    let LocalStates : LocalState[] = [];
-    for (let i : number = 0; i < gameConfig.numberOfPlayers; i++)
+    constructor(playerCount : number)
     {
-        LocalStates.push(new LocalState(privateState.DrawMultiple(gameConfig.cardsInEachHand)));
-    }
+        this.gameConfig = new GameConfig(industries, industryCards, towns, mines, linkInits, 8, playerCount);
+        this.privateState = new PrivateState(this.gameConfig);
 
-    let publicPlayerData : PublicPlayerData = new PublicPlayerData(gameConfig, initPlayerData.money, initPlayerData.income);
-    let publicState : PublicState = new PublicState(
-        gameConfig, privateState, publicPlayerData, initGameData.coalMarketCount, initGameData.ironMarketCount);
-    
-    console.log(gameConfig);
-    console.log(privateState);
-    console.log(LocalStates);
-    console.log(publicState);
+        this.localStates = []; 
+        for (let i : number = 0; i < this.gameConfig.numberOfPlayers; i++)
+        {
+            this.localStates.push(new LocalState(this.privateState.DrawMultiple(this.gameConfig.cardsInEachHand)));
+        }
+
+        this.publicPlayerData = new PublicPlayerData(this.gameConfig, initPlayerData.money, initPlayerData.income);
+        this.publicState = new PublicState(this.gameConfig, this.privateState, this.publicPlayerData, initGameData.coalMarketCount, initGameData.ironMarketCount);
+    }
+}
+
+export function StartGame(playerCount : number) : Game
+{
+    return new Game(playerCount);
 }
 
