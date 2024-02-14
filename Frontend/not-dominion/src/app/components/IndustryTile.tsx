@@ -88,7 +88,6 @@ export default function IndustryTile (props: IIndustryTileProps) {
                         </Box>
                     </Box>
                 </Box>
-
             }
         </>
     )
