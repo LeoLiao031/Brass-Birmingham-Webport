@@ -2,8 +2,14 @@ import { Input } from "./Input/Input";
 import { GameConfig } from "./State/GameConfig";
 import { LocalState, PublicState } from "./State/GameState";
 
-function ProcessInput(input : Input, publicState : PublicState, localState : LocalState, GameConfig : GameConfig) : void
+
+// Returns true only if input is valid and state has been successfuly altered
+function ProcessInput(input : Input, publicState : PublicState, localState : LocalState, GameConfig : GameConfig) : boolean
 {
-    input.PayAllCosts(localState, publicState, GameConfig);
-    input.Execute(localState, publicState, GameConfig);
+    if (input.playerID != publicState.currentTurnOrder[publicState.currentTurnIndex])
+    {
+        return false;
+    }
+
+    return input.Execute(localState, publicState, GameConfig);
 }

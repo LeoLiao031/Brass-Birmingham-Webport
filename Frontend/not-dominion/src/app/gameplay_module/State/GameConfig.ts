@@ -19,6 +19,9 @@ export class GameConfig
     cardsInEachHand : number;
     numberOfPlayers : number;
 
+    coalMarketPrices : number[] = [8, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1]
+    ironMarketPrices : number[] = [6, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1]
+
     constructor(industries : Industry[],
                 industryCards : IndustryCard[],
                 towns : Town[],
@@ -48,5 +51,37 @@ export class GameConfig
                 this.merchantTiles.push(randomIndex);
             }   
         });
+    }
+
+    GetCoalMarketCost(amountInMarket : number, count : number) : number
+    {
+        let currentAmountInMarket : number = amountInMarket;
+        let currentCount : number = count;
+        let currentCost : number = 0;
+
+        while (count > 0)
+        {
+            currentCost += this.coalMarketPrices[currentAmountInMarket];
+            currentAmountInMarket--;
+            currentCount--;
+        }
+
+        return currentCost;
+    }
+
+    GetIronMarketCost(amountInMarket : number, count : number) : number
+    {
+        let currentAmountInMarket : number = amountInMarket;
+        let currentCount : number = count;
+        let currentCost : number = 0;
+
+        while (count > 0)
+        {
+            currentCost += this.coalMarketPrices[currentAmountInMarket];
+            currentAmountInMarket--;
+            currentCount--;
+        }
+
+        return currentCost;
     }
 }

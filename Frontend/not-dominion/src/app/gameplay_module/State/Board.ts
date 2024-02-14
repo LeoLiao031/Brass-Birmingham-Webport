@@ -216,6 +216,40 @@ export class Board
 
         return mines;
     }
+
+    AreLocationsConnected(locationIndex : number, locationToReach : string, publicState : PublicState) : boolean
+    {
+        let traverser : Traverser = new Traverser(this, [locationIndex], publicState);
+
+        let currentLocation : number | undefined = traverser.GetNextLocationIndex();
+        while (currentLocation != undefined)
+        {
+            if (this.locations[currentLocation].location.name == locationToReach)
+            {
+                return true;
+            }
+            currentLocation = traverser.GetNextLocationIndex();
+        }
+
+        return false;
+    }
+
+    IsLocationConnectedToAMine(locationIndexes : number[], publicState : PublicState)
+    {
+        let traverser : Traverser = new Traverser(this, locationIndexes, publicState);
+
+        let currentLocation : number | undefined = traverser.GetNextLocationIndex();
+        while (currentLocation != undefined)
+        {
+            if (currentLocation >= this.mineStartIndex)
+            {
+                return true;
+            }
+            currentLocation = traverser.GetNextLocationIndex();
+        }
+
+        return false;
+    }
 }
 
 export class Traverser
@@ -226,12 +260,12 @@ export class Traverser
     publicState : PublicState | undefined;
     
     constructor(board : Board,
-                startingLocationIndex : number,
+                startingLocationIndexes : number[],
                 publicState : PublicState | undefined = undefined)
     {
         this.board = board;
         this.toDoList = [];
-        this.toDoList.push(startingLocationIndex);
+        this.toDoList = startingLocationIndexes;
         this.alreadyDoneList = [];
         this.publicState = publicState; 
     }

@@ -1,4 +1,3 @@
-import { Town } from "./Board";
 import { GameConfig } from "./GameConfig"
 
 /*
@@ -22,7 +21,7 @@ class IndustrySection
         this.counts = counts;
     }
 
-    GetNextSectionIndex() : number
+    GetNextSectionIndex() : number | undefined
     {
         for (let i : number = 0; i < this.counts.length; i++)
         {
@@ -212,6 +211,18 @@ export class PublicState
                 return true;
             }
         }
+
+        return false;
+    }
+
+    IsLocationInNetwork(location : number, playerID : number)
+    {
+        this.tilesOnBoard.forEach(tile => {
+            if (tile.townID.locationIndex == location && tile.ownerID == playerID)
+            {
+                return true;
+            }
+        });
 
         return false;
     }

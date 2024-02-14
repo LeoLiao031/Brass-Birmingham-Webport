@@ -3,17 +3,37 @@ import { GameConfig } from "../State/GameConfig";
 import { LocalState, PublicState, TileOnBoard } from "../State/GameState";
 import { BuildInput, Input, InputType } from "./Input";
 
+export enum ResponseType
+{
+    Failure,
+    Conditional,
+    Success
+}
+
+class CostResponse
+{
+    responseType : ResponseType;
+    additionalMoneyRequired : number;
+
+    constructor(responseType : ResponseType,
+                additionalMoneyRequired : number = 0)
+    {
+        this.responseType = responseType;
+        this.additionalMoneyRequired = additionalMoneyRequired;
+    }
+}
+
 export interface Cost
 {
-    CanPayCost(input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : boolean;
+    CanPayCost(input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : CostResponse;
     PayCost(input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : void;
 }
 
 export class CostTemplate implements Cost
 {
-    CanPayCost (input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : boolean 
+    CanPayCost (input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : CostResponse 
     {
-        return true;
+        return new CostResponse(ResponseType.Success);
     };
     
     PayCost(input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : void
@@ -24,19 +44,19 @@ export class CostTemplate implements Cost
 
 export class CardCost implements Cost
 {
-    CanPayCost (input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : boolean 
+    CanPayCost (input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : CostResponse 
     {
         if (!input.cardUsed)
         {
-            return false;
+            return new CostResponse(ResponseType.Failure);
         }
 
         if (localState.hand.indexOf(input.cardUsed) == -1)
         {
-            return false;
+            return new CostResponse(ResponseType.Failure);
         }
 
-        return true;
+        return new CostResponse(ResponseType.Success);
     }
 
     PayCost(input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : void
@@ -50,11 +70,11 @@ export class CardCost implements Cost
 
 export class AppropriateCardCost implements Cost
 {
-    CanPayCost (input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : boolean 
+    CanPayCost (input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : CostResponse 
     {
         if (input.inputType != InputType.Build)
         {
-            return false;
+            return new CostResponse(ResponseType.Failure);
         }
 
         let buildInput : BuildInput = input as BuildInput;
@@ -62,34 +82,34 @@ export class AppropriateCardCost implements Cost
         // TODO Oscar: This is unfinished. There's like 10 more conditions.
         if (buildInput.townID.locationIndex >= gameConfig.board.locations.length)
         {
-            return false;
+            return new CostResponse(ResponseType.Failure);
         }
 
         if (buildInput.townID.locationIndex >= gameConfig.board.mineStartIndex)
         {
-            return false;
+            return new CostResponse(ResponseType.Failure);
         }
 
         let town = gameConfig.board.locations[buildInput.townID.locationIndex].location as Town;
 
         if (town == undefined)
         {
-            return false;
+            return new CostResponse(ResponseType.Failure);
         }
 
         if (buildInput.townID.tileIndex >= town.tiles.length)
         {
-            return false
+            return new CostResponse(ResponseType.Failure);
         }
 
         if (town.tiles[buildInput.townID.tileIndex].allowedIndustries.indexOf(buildInput.industryIndex) == -1)
         {
-            return false;
+            return new CostResponse(ResponseType.Failure);
         }
 
         if (!publicState.IsTileEmpty(buildInput.townID))
         {
-            return false;
+            return new CostResponse(ResponseType.Failure);
         }
 
         return new CardCost().CanPayCost(input, localState, publicState, gameConfig);
@@ -109,14 +129,9 @@ export class MoneyCost implements Cost
         this.amount = amount;
     }
 
-    CanPayCost (input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : boolean 
+    CanPayCost (input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : CostResponse 
     {
-        if (publicState.publicPlayerData[input.playerID].money < this.amount)
-        {
-            return false;
-        }
-
-        return true;
+        return new CostResponse(ResponseType.Conditional, this.amount);
     };
     
     PayCost(input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : void
@@ -128,34 +143,34 @@ export class MoneyCost implements Cost
 export class CoalCost implements Cost
 {
     amount : number;
-    startingLocationIndex : number;
+    startingLocationIndexes : number[];
     constructor(amount : number,
-                startingLocationIndex : number)
+                startingLocationIndexes : number[])
     {
         this.amount = amount;
-        this.startingLocationIndex = startingLocationIndex;
+        this.startingLocationIndexes = startingLocationIndexes;
     }
 
-    CanPayCost (input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : boolean 
+    CanPayCost (input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : CostResponse 
     {
         let amountRemaining : number = this.amount;
 
         let traverser : Traverser = new Traverser(
-            gameConfig.board, this.startingLocationIndex, publicState);
+            gameConfig.board, this.startingLocationIndexes, publicState);
 
         let currentLocation = traverser.GetNextLocationIndex();
         while (currentLocation != undefined)
         {
             publicState.tilesOnBoard.forEach((tileOnBoard : TileOnBoard) => 
             {
-                if (tileOnBoard.townID.locationIndex == currentLocation &&
-                    tileOnBoard.coal > amountRemaining)
+                if (tileOnBoard.townID.locationIndex == currentLocation)
                 {
-                    amountRemaining -= tileOnBoard.coal;
+                    let amountToTake : number = Math.min(tileOnBoard.coal, amountRemaining);
+                    amountRemaining -= amountToTake;
 
                     if (amountRemaining <= 0)
                     {
-                        return true;
+                        return new CostResponse(ResponseType.Success);
                     }
                 }
             })
@@ -163,7 +178,18 @@ export class CoalCost implements Cost
             currentLocation = traverser.GetNextLocationIndex();
         }
 
-        return false;
+        if (!gameConfig.board.IsLocationConnectedToAMine(this.startingLocationIndexes, publicState))
+        {
+            return new CostResponse(ResponseType.Failure);
+        }
+
+        if (amountRemaining > publicState.coalMarketCount)
+        {
+            return new CostResponse(ResponseType.Failure);
+        }
+
+        let additionalCost : number = gameConfig.GetCoalMarketCost(publicState.coalMarketCount, amountRemaining);
+        return new CostResponse(ResponseType.Conditional, additionalCost);
     };
     
     PayCost(input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : void
@@ -171,15 +197,14 @@ export class CoalCost implements Cost
         let amountRemaining : number = this.amount;
 
         let traverser : Traverser = new Traverser(
-            gameConfig.board, this.startingLocationIndex, publicState);
+            gameConfig.board, this.startingLocationIndexes, publicState);
         
         let currentLocation = traverser.GetNextLocationIndex();
         while (currentLocation != undefined)
         {
             publicState.tilesOnBoard.forEach((tileOnBoard : TileOnBoard) => 
             {
-                if (tileOnBoard.townID.locationIndex == currentLocation &&
-                    tileOnBoard.coal > amountRemaining)
+                if (tileOnBoard.townID.locationIndex == currentLocation)
                 {
                     let amountToConsume : number = Math.min(tileOnBoard.coal, amountRemaining)
                     amountRemaining -= amountToConsume
@@ -194,6 +219,10 @@ export class CoalCost implements Cost
 
             currentLocation = traverser.GetNextLocationIndex();
         }
+
+        let additionalCost : number = gameConfig.GetCoalMarketCost(publicState.coalMarketCount, amountRemaining);
+        publicState.publicPlayerData[input.playerID].money -= additionalCost;
+        publicState.coalMarketCount -= amountRemaining;
     }
 }
 
@@ -208,26 +237,26 @@ export class IronCost implements Cost
         this.startingLocationIndex = startingLocationIndex;
     }
 
-    CanPayCost (input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : boolean 
+    CanPayCost (input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : CostResponse 
     {
         let amountRemaining : number = this.amount;
 
         let traverser : Traverser = new Traverser(
-            gameConfig.board, this.startingLocationIndex);
+            gameConfig.board, [this.startingLocationIndex]);
 
         let currentLocation = traverser.GetNextLocationIndex();
         while (currentLocation != undefined)
         {
             publicState.tilesOnBoard.forEach((tileOnBoard : TileOnBoard) => 
             {
-                if (tileOnBoard.townID.locationIndex == currentLocation &&
-                    tileOnBoard.iron > amountRemaining)
+                if (tileOnBoard.townID.locationIndex == currentLocation)
                 {
-                    amountRemaining -= tileOnBoard.iron;
+                    let amountToTake : number = Math.min(tileOnBoard.iron, amountRemaining);
+                    amountRemaining -= amountToTake;
 
                     if (amountRemaining <= 0)
                     {
-                        return true;
+                        return new CostResponse(ResponseType.Success);
                     }
                 }
             })
@@ -235,7 +264,13 @@ export class IronCost implements Cost
             currentLocation = traverser.GetNextLocationIndex();
         }
 
-        return false;
+        if (amountRemaining > publicState.ironMarketCount)
+        {
+            return new CostResponse(ResponseType.Failure);
+        }
+
+        let additionalCost : number = gameConfig.GetIronMarketCost(publicState.ironMarketCount, amountRemaining);
+        return new CostResponse(ResponseType.Conditional, additionalCost);
     };
     
     PayCost(input : Input, localState : LocalState, publicState : PublicState, gameConfig : GameConfig) : void
@@ -243,7 +278,7 @@ export class IronCost implements Cost
         let amountRemaining : number = this.amount;
 
         let traverser : Traverser = new Traverser(
-            gameConfig.board, this.startingLocationIndex, publicState);
+            gameConfig.board, [this.startingLocationIndex], publicState);
         
         let currentLocation = traverser.GetNextLocationIndex();
         while (currentLocation != undefined)
@@ -266,5 +301,10 @@ export class IronCost implements Cost
 
             currentLocation = traverser.GetNextLocationIndex();
         }
+
+        
+        let additionalCost : number = gameConfig.GetIronMarketCost(publicState.coalMarketCount, amountRemaining);
+        publicState.publicPlayerData[input.playerID].money -= additionalCost;
+        publicState.coalMarketCount -= amountRemaining;
     }
 }
