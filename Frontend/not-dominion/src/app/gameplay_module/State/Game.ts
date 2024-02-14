@@ -10,7 +10,7 @@ import linkInits from "./Data/Board/LinkInits.json"
 import initGameData from "./Data/InitGameData.json"
 import initPlayerData from "./Data/InitPlayerData.json"
 
-class Game {
+export class Game {
     gameConfig : GameConfig;
     privateState : PrivateState;
     localStates : LocalState[];

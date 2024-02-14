@@ -1,7 +1,7 @@
 /*
 Represents the stats of a level of an industry
 */
-class IndustryLevel
+export class IndustryLevel
 {
     moneyCost: number; 
     coalCost: number;
