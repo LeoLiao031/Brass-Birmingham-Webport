@@ -1,31 +1,54 @@
 import { Box, Typography } from "@mui/material";
 import * as images from "../images/index"
-import { numberToRoman } from "../utils/utils"
+import { IndustryDataFromTile, IndustryNameFromTile, numberToRoman } from "../utils/utils"
 import BeerCostIcon from "./BeerCostIcon";
 import ResourceCountIcon from "./ResourceCountIcon";
 import VictoryPointIcon from "./VictoryPointIcon";
 import IncomeIcon from "./IncomeIcon";
 import LinkpointIcon from "./LinkpointIcon";
+import { Game } from "../gameplay_module/State/Game";
+import { TileOnBoard } from "../gameplay_module/State/GameState";
 
 interface IIndustryTileProps {
-    industry: string;
-    flipped: boolean;
-    tier: number;
-    income: number;
-    victoryPoints: number;
-    linkPoints: number;
-    flipCost?: number;
-    resourceCount?: number;
+    gameInfo: Game;
+    tile: TileOnBoard;
     colour?: string;
 }
 
 export default function IndustryTile (props: IIndustryTileProps) {
-    const { industry, flipped, victoryPoints, income, linkPoints, colour } = props;
+    const industry = IndustryNameFromTile(props.gameInfo, props.tile.industryIndex) || "blank"
+    const flipped = props.tile.isFlipped
+    const tier = numberToRoman.get(props.tile.industryLevel)
+    let victoryPoints = 0
+    let income = 0
+    let linkPoints = 0
+    let flipCost = 0
+    let resourceCount = 0
+
+    // fetch the industry data using the tileIndex number
+    const industryData = IndustryDataFromTile(props.gameInfo, props.tile.industryIndex)
+
+    if (industryData != undefined) {
+        victoryPoints = industryData.victoryPoints
+        income = industryData.incomeBonus
+        flipCost = industryData.beerCostToFlip
+        
+        // switch to determine resource count as there multiple resource types
+        switch(industry) {
+            case "Coal": {
+                resourceCount = props.tile.coal
+            }
+            case "Iron": {
+                resourceCount = props.tile.iron
+            }
+            case "Brewery": {
+                resourceCount = props.tile.beer
+            }
+        }
+    }
+
     const industryImage = images[industry as keyof typeof images];
-    const tier = numberToRoman.get(props.tier)
-    const flipCost = props.flipCost || 0
-    const resourceCount = props.resourceCount || 0
-    const backgroundColour = colour || "#222426"
+    const backgroundColour = props.colour || "#222426"
 
     const wrappingBoxStyle = {
         backgroundImage: `url(${industryImage.src})`,

@@ -1,6 +1,5 @@
 import { Grid } from "@mui/material";
 import { Town } from "../gameplay_module/State/Board";
-import IndustryTile from "./IndustryTile";
 
 interface ILocationProps {
     industryCount: number;
@@ -17,9 +16,6 @@ export default function Location (props: ILocationProps) {
             {!needTwoLayers &&
                 <Grid container spacing={0}>
                     <Grid item xs={12} sx={ singleLineIndustryStyle }>
-                        <IndustryTile industry={""} flipped={false} tier={0} income={0} victoryPoints={0} linkPoints={0}>
-                            
-                        </IndustryTile>
                     </Grid>
                 </Grid>}
         </>

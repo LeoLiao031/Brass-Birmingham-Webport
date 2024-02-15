@@ -23,3 +23,13 @@ export function IndustryDataFromTile(game : Game, tileIndex : number) : Industry
     }
     return game.gameConfig.industries[tile.industryIndex].industryLevels[tile.industryLevel];
 }
+
+export function IndustryNameFromTile(game : Game, tileIndex : number) : string | undefined
+{
+    let tile = game.publicState.tilesOnBoard.at(tileIndex);
+    if (tile == undefined)
+    {
+        return undefined;
+    }
+    return game.gameConfig.industries[tile.industryIndex].name;
+}
