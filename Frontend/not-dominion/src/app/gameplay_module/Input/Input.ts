@@ -1,6 +1,6 @@
 import { GameConfig } from "../State/GameConfig";
 import { Card, Link, LocalState, PublicState, TileOnBoard, TownID } from "../State/GameState";
-import { AppropriateCardCost, Cost, MoneyCost, CoalCost, IronCost, ResponseType, CardCost } from "./Costs";
+import { AppropriateCardCost, Cost, MoneyCost, CoalCost, IronCost, CardCost } from "./Costs";
 
 export enum InputType
 {
@@ -42,23 +42,16 @@ export class Input
     IsValidInput(localState: LocalState, publicState: PublicState, gameConfig: GameConfig) : boolean
     {
         let costs : Cost[] = this.GetCosts(localState, publicState, gameConfig);
-        let moneyCost : number = 0; 
 
         for (let i : number = 0; i < costs.length; i++)
         {
-            let response = costs[i].CanPayCost(this, localState, publicState, gameConfig);
-
-            if (response.responseType == ResponseType.Failure)
+            if (!costs[i].PayCost(this, localState, publicState, gameConfig))
             {
                 return false;
             }
-            else if (response.responseType == ResponseType.Conditional)
-            {
-                moneyCost += response.additionalMoneyRequired;
-            }
         }
 
-        if (publicState.publicPlayerData[this.playerID].money < moneyCost)
+        if (publicState.publicPlayerData[this.playerID].money < 0)
         {
             return false;
         }
